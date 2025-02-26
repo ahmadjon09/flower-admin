@@ -52,7 +52,7 @@ export const Login = () => {
           <input
             type='number'
             className='p-3 w-full outline-none bg-transparent text-pink-700'
-            placeholder='Телефон номер'
+            placeholder='Phone number'
             value={phone}
             onChange={e => setPhone(e.target.value)}
           />
@@ -62,7 +62,7 @@ export const Login = () => {
           <input
             type={isPasswordVisible ? 'text' : 'password'}
             className='border border-pink-300 p-3 w-full rounded-xl bg-transparent text-pink-700'
-            placeholder='Введите пароль'
+            placeholder='password'
             value={password}
             onChange={e => setPassword(e.target.value)}
           />
@@ -83,7 +83,7 @@ export const Login = () => {
           }`}
           disabled={isLoading}
         >
-          {isLoading ? 'Загрузка...' : 'Войти'}
+          {isLoading ? 'Loading...' : 'Login'}
         </button>
       </form>
     </section>
