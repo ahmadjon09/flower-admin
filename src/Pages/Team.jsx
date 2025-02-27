@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Axios from '../Axios'
 import {
@@ -8,35 +8,25 @@ import {
 } from '../Toolkit/TeamSlicer'
 import { FacebookLogo, InstagramLogo, TwitterLogo } from '@phosphor-icons/react'
 import { Link } from 'react-router-dom'
+import { ConfirmAlert } from '../Components/ConfirmAlert'
+import { ContextData } from '../Context/Context'
 
 export const Team = () => {
   const dispatch = useDispatch()
   const { data, isPending, isError } = useSelector(state => state.team)
-
+  const { showConfirm, setShowConfirm } = useContext(ContextData)
   useEffect(() => {
     const getAllTeam = async () => {
       dispatch(getTeamPending())
       try {
         const response = await Axios.get('teams')
         dispatch(getTeamSuccess(response.data?.data || []))
-        console.log(response.data)
       } catch (error) {
         dispatch(getTeamError(error.response?.data?.message || 'Unknown error'))
       }
     }
     getAllTeam()
   }, [dispatch])
-
-  const handleDelete = async id => {
-    if (!window.confirm('Are you sure you want to delete this team?')) return
-    try {
-      await Axios.delete(`teams/${id}`)
-      dispatch(getTeamSuccess(data.filter(team => team._id !== id)))
-      alert('Team deleted successfully')
-    } catch (error) {
-      alert(error.response?.data?.message || 'Failed to delete team')
-    }
-  }
 
   return (
     <div className='p-8 bg-pink-100 text-gray-900 min-h-screen h-screen pb-[100px] overflow-y-auto'>
@@ -69,7 +59,7 @@ export const Team = () => {
                 <img
                   src={team.photos[0] || 'https://via.placeholder.com/150'}
                   alt={`${team.firstName} ${team.lastName}`}
-                  className='w-full h-full object-center hover:opacity-80 transition-opacity duration-500'
+                  className='w-full h-full object-cover hover:opacity-80 transition-opacity duration-500'
                 />
               </div>
               <div className='w-full p-4'>
@@ -109,7 +99,7 @@ export const Team = () => {
                     Edit
                   </Link>
                   <button
-                    onClick={() => handleDelete(team._id)}
+                    onClick={() => setShowConfirm(!showConfirm)}
                     className='bg-red-500 text-white rounded-lg px-4 py-2 text-sm hover:bg-red-400 transition-all'
                   >
                     Delete
@@ -123,6 +113,9 @@ export const Team = () => {
         <p className='text-gray-500 text-center text-lg mt-10'>
           No team members found.
         </p>
+      )}
+      {showConfirm && (
+        <ConfirmAlert message={'Are you sure you want to delete this team?'} />
       )}
     </div>
   )

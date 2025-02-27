@@ -9,8 +9,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux'
 import { Loading } from './Pages/Loading'
 import { Dashboard } from './Pages/Dashboard'
-import { Updete } from './modules/Updete'
-import { UserUpdete } from './modules/UserUpdete'
+import { Updete } from './modules/Update'
 import { AddNewAdmin } from './modules/AddNewAdmin'
 import { EditProduct } from './modules/EditProduct'
 import { AuthLayout } from './Layout/AuthLayout'
@@ -21,6 +20,7 @@ import { AddProduct } from './modules/AddProduct'
 import { Team } from './Pages/Team'
 import { Error } from './Pages/Error' // Error komponenti qo‘shildi
 import { Admins } from './Pages/Admins'
+import { UserUpdate } from './modules/UserUpdate'
 
 function App () {
   const dispatch = useDispatch()
@@ -41,7 +41,7 @@ function App () {
       } catch (error) {
         dispatch(getUserError(error.response?.data || 'Unknown Token'))
       } finally {
-        setIsLoading(false) // Tugagandan keyin yuklanish tugadi
+        setIsLoading(false)
       }
     }
 
@@ -60,7 +60,7 @@ function App () {
           children: [
             { index: true, element: <Dashboard /> },
             { path: 'admins', element: <Admins /> },
-            { path: 'edit-admin/:id', element: <UserUpdete /> },
+            { path: 'edit-admin/:id', element: <UserUpdate /> },
             { path: 'create-admin', element: <AddNewAdmin /> },
             { path: 'products', element: <Products /> },
             { path: 'products/edit/:id', element: <EditProduct /> },

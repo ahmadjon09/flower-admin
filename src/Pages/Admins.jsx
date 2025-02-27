@@ -1,6 +1,6 @@
-import { useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import Axios from '../Axios'
 import {
   getAdminsError,
@@ -8,11 +8,15 @@ import {
   getAdminsSuccess
 } from '../Toolkit/AdminsSlicer'
 import { Pencil, Trash2 } from 'lucide-react'
-
+import cardImg from '../data/card.png'
+import { ContextData } from '../Context/Context'
+import { ConfirmAlert } from '../Components/ConfirmAlert'
+import { SetAlertErr } from '../Components/SetAlertErr'
 export const Admins = () => {
   const dispatch = useDispatch()
-  const navigate = useNavigate()
   const { data, isPending, isError } = useSelector(state => state.admins)
+  const { showConfirm, setShowConfirm, showAlerterr, showAlertInfo } =
+    useContext(ContextData)
 
   useEffect(() => {
     const getAllAdmins = async () => {
@@ -28,17 +32,6 @@ export const Admins = () => {
     }
     getAllAdmins()
   }, [dispatch])
-
-  const handleDelete = async id => {
-    if (!window.confirm('Are you sure you want to delete this admin?')) return
-    try {
-      await Axios.delete(`admin/${id}`)
-      dispatch(getAdminsSuccess(data.filter(admin => admin._id !== id)))
-      alert('Admin deleted successfully')
-    } catch (error) {
-      alert(error.response?.data?.message || 'Failed to delete admin')
-    }
-  }
 
   return (
     <div className='p-6 bg-gradient-to-b from-pink-100 to-white min-h-screen h-screen pb-[100px] overflow-y-auto'>
@@ -61,8 +54,9 @@ export const Admins = () => {
           {data.map(admin => (
             <div
               key={admin._id}
-              className='bg-white shadow-lg rounded-xl hover:scale-110 duration-200 p-4 flex flex-col items-center text-center transition-all hover:shadow-2xl'
+              className='bg-white relative shadow-lg rounded-xl hover:scale-110 duration-200 p-4 flex flex-col items-center text-center transition-all hover:shadow-2xl'
             >
+              <img src={cardImg} alt='card' />
               <img
                 src={
                   admin.avatar ||
@@ -74,7 +68,7 @@ export const Admins = () => {
               <h3 className='text-lg font-semibold text-pink-800'>
                 {admin.firstName} {admin.lastName}
               </h3>
-              <p className='text-gray-600'>{admin.phoneNumber}</p>
+              <p className='text-gray-600'>+(998) {admin.phoneNumber}</p>
               <div className='flex gap-3 mt-4'>
                 <Link
                   to={`/edit-admin/${admin._id}`}
@@ -84,7 +78,7 @@ export const Admins = () => {
                 </Link>
                 {data.length > 1 ? (
                   <button
-                    onClick={() => handleDelete(admin._id)}
+                    onClick={() => setShowConfirm(!showConfirm)}
                     className='bg-red-500 text-white rounded-full p-2 hover:bg-red-600 transition-all'
                   >
                     <Trash2 size={16} />
@@ -99,6 +93,10 @@ export const Admins = () => {
           No admins found.
         </p>
       )}
+      {showConfirm && (
+        <ConfirmAlert message={'Are you sure you want to delete this admin?'} />
+      )}
+      {showAlerterr && <SetAlertErr />}
     </div>
   )
 }

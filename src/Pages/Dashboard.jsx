@@ -13,6 +13,7 @@ import {
   getCarouselPending,
   getCarouselSuccess
 } from '../Toolkit/CarouselSlicer'
+import { SetAlertErr } from '../Components/SetAlertErr'
 
 export const Dashboard = () => {
   const dispatch = useDispatch()
@@ -35,7 +36,6 @@ export const Dashboard = () => {
     }
     getAllCarousel()
   }, [dispatch])
-  console.log(data)
 
   const onAutoplayTimeLeft = (s, time, progress) => {
     progressCircle.current.style.setProperty('--progress', 1 - progress)
@@ -49,15 +49,20 @@ export const Dashboard = () => {
 
   return (
     <div className='w-full h-screen overflow-y-auto pb-[100px]  bg-pink-100'>
-      <div className='flex justify-between flex-wrap gap-3 h-[100px] p-5 items-center border-b border-pink-300'>
-        <div className='flex text-pink-600 font-bold items-center gap-3'>
+      <div className='flex justify-between flex-wrap gap-3 h-[150px] p-5 items-center border-b border-pink-300'>
+        <div className='flex text-pink-600  items-center gap-3'>
           <img
             src={user.avatar}
             width={'50px'}
             alt='User Avatar'
             className='rounded-full object-cover border-2 border-pink-500'
           />
-          <h1>{user.lastName + ' ' + user.firstName}</h1>
+          <div className='flex flex-col'>
+            <h1 className='font-bold'>
+              {user.lastName + ' ' + user.firstName}
+            </h1>
+            <p className='text-sm text-gray-600'>+(998) {user.phoneNumber}</p>
+          </div>
         </div>
         <button
           onClick={() => Logout()}

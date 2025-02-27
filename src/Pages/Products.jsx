@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Axios from '../Axios'
 import {
@@ -7,10 +7,13 @@ import {
   getProductSuccess
 } from '../Toolkit/ProductsSlicer'
 import { Link } from 'react-router-dom'
+import { ContextData } from '../Context/Context'
+import { ConfirmAlert } from '../Components/ConfirmAlert'
 
 export const Products = () => {
   const dispatch = useDispatch()
   const { data, isPending, isError } = useSelector(state => state.products)
+  const { showConfirm, setShowConfirm } = useContext(ContextData)
 
   useEffect(() => {
     const getAllProducts = async () => {
@@ -77,7 +80,7 @@ export const Products = () => {
                   <img
                     src={product.photos[0] || null}
                     alt='Product'
-                    className='w-full max-h-60 h-60 object-center hover:scale-110 transition-all duration-700'
+                    className='w-full max-h-60 h-60 object-cover hover:scale-110 transition-all duration-700'
                   />
                 </div>
                 <div className='w-full p-4'>
@@ -109,7 +112,7 @@ export const Products = () => {
                       Edit
                     </Link>
                     <button
-                      onClick={() => handleDelete(product._id)}
+                      onClick={() => setShowConfirm(!showConfirm)}
                       className='bg-red-600 text-white rounded-md px-3 py-1 text-sm hover:bg-red-700'
                     >
                       Delete
@@ -124,6 +127,11 @@ export const Products = () => {
         <p className='text-gray-600 text-center text-lg mt-4'>
           No products found.
         </p>
+      )}
+      {showConfirm && (
+        <ConfirmAlert
+          message={'Are you sure you want to delete this product?'}
+        />
       )}
     </div>
   )
