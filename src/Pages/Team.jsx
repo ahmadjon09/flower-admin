@@ -8,7 +8,6 @@ import {
 } from '../Toolkit/TeamSlicer'
 import { FacebookLogo, InstagramLogo, TwitterLogo } from '@phosphor-icons/react'
 import { Link } from 'react-router-dom'
-import { ConfirmAlert } from '../Components/ConfirmAlert'
 import { ContextData } from '../Context/Context'
 
 export const Team = () => {
@@ -58,13 +57,13 @@ export const Team = () => {
               <div className='w-full max-h-72 h-72 overflow-hidden rounded-md'>
                 <img
                   src={team.photos[0] || 'https://via.placeholder.com/150'}
-                  alt={`${team.firstName} ${team.lastName}`}
+                  alt={`${team.name}`}
                   className='w-full h-full object-cover hover:opacity-80 transition-opacity duration-500'
                 />
               </div>
               <div className='w-full p-4'>
                 <h2 className='text-2xl font-bold text-pink-600'>
-                  {team.firstName} {team.lastName}
+                  {team.name}
                 </h2>
                 <p className='text-sm text-gray-600 mt-2'>
                   {team.position.length > 150

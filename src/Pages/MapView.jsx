@@ -4,7 +4,8 @@ import 'leaflet/dist/leaflet.css'
 import Axios from '../Axios'
 import { Link } from 'react-router-dom'
 
-const center = { lat: 41.2995, lng: 69.2401 }
+const center = { lat: 40.9983, lng: 71.6726 }
+
 
 export const ViewMap = () => {
   const [locations, setLocations] = useState([])
@@ -13,8 +14,6 @@ export const ViewMap = () => {
     const fetchLocations = async () => {
       try {
         const res = await Axios.get('/map')
-        console.log(res.data)
-
         setLocations(res.data)
       } catch (error) {
         console.error('Error fetching locations:', error)

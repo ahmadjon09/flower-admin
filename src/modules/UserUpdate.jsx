@@ -69,7 +69,7 @@ export const UserUpdate = () => {
           type='text'
           placeholder='Firstname'
           name='firstName'
-          value={userData.firstName}
+          value={userData.firstName || ''}
           onChange={handleInputChange}
         />
         <input
@@ -77,7 +77,7 @@ export const UserUpdate = () => {
           type='text'
           placeholder='Lastname'
           name='lastName'
-          value={userData.lastName}
+          value={userData.lastName || ''}
           onChange={handleInputChange}
         />
         <input
@@ -85,7 +85,7 @@ export const UserUpdate = () => {
           type='number'
           placeholder='Phone number'
           name='phoneNumber'
-          value={userData.phoneNumber}
+          value={userData.phoneNumber || ''}
           onChange={handleInputChange}
         />
         <input
@@ -93,7 +93,7 @@ export const UserUpdate = () => {
           type='password'
           placeholder='New password'
           name='newPassword'
-          value={userData.newPassword}
+          value={userData.newPassword || ''}
           onChange={handleInputChange}
         />
         <div className='grid grid-cols-2 gap-3'>

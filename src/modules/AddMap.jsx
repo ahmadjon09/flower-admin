@@ -6,7 +6,7 @@ import Axios from '../Axios'
 import { useNavigate } from 'react-router-dom'
 import { ContextData } from '../Context/Context'
 
-const center = { lat: 41.2995, lng: 69.2401 }
+const center = { lat: 40.9983, lng: 71.6726 }
 
 export const AddMap = () => {
   const navigate = useNavigate()
@@ -40,7 +40,7 @@ export const AddMap = () => {
     }
     if (marker && mapsName) {
       try {
-        await Axios.post('/map/maps', mapData)
+        await Axios.post('/map', mapData)
         setMarker(null)
         setMapsName('')
         navigate('/maps')

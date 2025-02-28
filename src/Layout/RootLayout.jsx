@@ -13,7 +13,7 @@ export const RootLayout = () => {
     <div className='h-screen overflow-hidden'>
       <Header />
       {showConfirm && (
-        <ConfirmAlert message={'Are you sure you want to delete this admin?'} />
+        <ConfirmAlert message={'Are you sure you want to delete this?'} />
       )}
       {showAlerterr && <SetAlertErr />}
       <div className={sideBar ? 'open-grid' : 'close-grid'}>
