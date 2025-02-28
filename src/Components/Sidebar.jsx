@@ -6,7 +6,8 @@ import {
   Users,
   SlidersHorizontalIcon,
   PanelRightClose,
-  PanelRightOpen
+  PanelRightOpen,
+  MapPinPlus
 } from 'lucide-react'
 import { ContextData } from '../Context/Context'
 export const Sidebar = () => {
@@ -60,6 +61,15 @@ export const Sidebar = () => {
           >
             <Users />
             {sideBar ? 'Teams' : null}
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to={'/maps'}
+            className='flex items-center gap-2 text-xl text-yellow-500 p-5'
+          >
+            <MapPinPlus />
+            {sideBar ? 'Map' : null}
           </NavLink>
         </li>
       </ul>

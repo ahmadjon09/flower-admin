@@ -114,9 +114,6 @@ export const Team = () => {
           No team members found.
         </p>
       )}
-      {showConfirm && (
-        <ConfirmAlert message={'Are you sure you want to delete this team?'} />
-      )}
     </div>
   )
 }

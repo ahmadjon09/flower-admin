@@ -18,15 +18,16 @@ import { RootLayout } from './Layout/RootLayout'
 import { Products } from './Pages/Products'
 import { AddProduct } from './modules/AddProduct'
 import { Team } from './Pages/Team'
-import { Error } from './Pages/Error' // Error komponenti qo‘shildi
+import { Error } from './Pages/Error'
 import { Admins } from './Pages/Admins'
 import { UserUpdate } from './modules/UserUpdate'
+import { AddMap } from './modules/AddMap'
+import { ViewMap } from './Pages/MapView'
 
 function App () {
   const dispatch = useDispatch()
   const { isAuth, isPending } = useSelector(state => state.user)
-  const [isLoading, setIsLoading] = useState(true) // Mahalliy yuklanish holati
-
+  const [isLoading, setIsLoading] = useState(true)
   useEffect(() => {
     const getMyData = async () => {
       try {
@@ -67,6 +68,8 @@ function App () {
             { path: 'create-product', element: <AddProduct /> },
             { path: 'team', element: <Team /> },
             { path: 'team-edit/:id', element: <Updete /> },
+            { path: 'add-maps', element: <AddMap /> },
+            { path: 'maps', element: <ViewMap /> },
             { path: '*', element: <Error /> }
           ]
         }

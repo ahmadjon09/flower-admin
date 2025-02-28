@@ -128,11 +128,6 @@ export const Products = () => {
           No products found.
         </p>
       )}
-      {showConfirm && (
-        <ConfirmAlert
-          message={'Are you sure you want to delete this product?'}
-        />
-      )}
     </div>
   )
 }

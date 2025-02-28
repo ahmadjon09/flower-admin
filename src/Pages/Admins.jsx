@@ -15,8 +15,7 @@ import { SetAlertErr } from '../Components/SetAlertErr'
 export const Admins = () => {
   const dispatch = useDispatch()
   const { data, isPending, isError } = useSelector(state => state.admins)
-  const { showConfirm, setShowConfirm, showAlerterr, showAlertInfo } =
-    useContext(ContextData)
+  const { showConfirm, setShowConfirm } = useContext(ContextData)
 
   useEffect(() => {
     const getAllAdmins = async () => {
@@ -93,10 +92,6 @@ export const Admins = () => {
           No admins found.
         </p>
       )}
-      {showConfirm && (
-        <ConfirmAlert message={'Are you sure you want to delete this admin?'} />
-      )}
-      {showAlerterr && <SetAlertErr />}
     </div>
   )
 }
