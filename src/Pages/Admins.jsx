@@ -10,8 +10,7 @@ import {
 import { Pencil, Trash2 } from 'lucide-react'
 import cardImg from '../data/card.png'
 import { ContextData } from '../Context/Context'
-import { ConfirmAlert } from '../Components/ConfirmAlert'
-import { SetAlertErr } from '../Components/SetAlertErr'
+
 export const Admins = () => {
   const dispatch = useDispatch()
   const { data, isPending, isError } = useSelector(state => state.admins)

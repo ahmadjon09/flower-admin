@@ -15,7 +15,9 @@ export const Sidebar = () => {
 
   return (
     <aside
-      className={`bg-pink-900 h-screen relative ${sideBar ? '' : 'w-[60px]'}`}
+      className={`bg-pink-900 h-screen transition-all duration-300 ease-in-out relative ${
+        sideBar ? 'w-[250px]' : 'w-[60px]'
+      }`}
     >
       <div className='flex absolute w-full p-3 justify-end text-yellow-500'>
         <button onClick={() => setSideBar(!sideBar)}>

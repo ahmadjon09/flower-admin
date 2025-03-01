@@ -1,8 +1,8 @@
-import { useEffect, useRef } from 'react'
+import { useContext, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Axios from '../Axios'
 import Cookies from 'js-cookie'
-import { LogOut } from 'lucide-react'
+import { LogOut, Pencil, Trash2 } from 'lucide-react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Pagination, Navigation } from 'swiper/modules'
 import 'swiper/css'
@@ -13,7 +13,8 @@ import {
   getCarouselPending,
   getCarouselSuccess
 } from '../Toolkit/CarouselSlicer'
-import { SetAlertErr } from '../Components/SetAlertErr'
+import { ContextData } from '../Context/Context'
+import { Link } from 'react-router-dom'
 
 export const Dashboard = () => {
   const dispatch = useDispatch()
@@ -21,6 +22,7 @@ export const Dashboard = () => {
   const user = useSelector(state => state.user.data?.data || {})
   const progressCircle = useRef(null)
   const progressContent = useRef(null)
+  const { showConfirm, setShowConfirm } = useContext(ContextData)
 
   useEffect(() => {
     const getAllCarousel = async () => {
@@ -85,19 +87,46 @@ export const Dashboard = () => {
         navigation={true}
         modules={[Autoplay, Pagination, Navigation]}
         onAutoplayTimeLeft={onAutoplayTimeLeft}
-        className='mySwiper h-[400px]' // Swiper'ga balandlik qo‘shildi
+        className='mySwiper h-[500px]'
       >
         {isPending ? (
           <SwiperSlide className='flex items-center justify-center text-lg font-bold text-gray-600'>
             Loading...
           </SwiperSlide>
         ) : data.length > 0 ? (
-          data.map((item, index) => (
+          data.map(item => (
             <SwiperSlide
-              key={index}
-              className='bg-pink-200 text-center h-full flex items-center justify-center text-pink-700 font-bold text-xl py-6'
+              key={item._id}
+              className='relative h-full active:cursor-grab'
             >
-              {item.title}
+              <img
+                src={item.photos[0]}
+                className='w-full h-full object-center rounded-lg shadow-lg'
+              />
+              <div className='absolute inset-0 flex flex-col justify-center items-start text-white text-left px-6 sm:px-8 py-4'>
+                <span className='text-xs sm:text-sm md:text-lg font-asul font-bold tracking-widest mb-2'>
+                  {item.title}
+                </span>
+                <h1 className='text-lg sm:text-xl md:text-3xl font-asul font-bold tracking-widest sm:w-[25rem] md:w-[29rem]'>
+                  {item.description}
+                </h1>
+              </div>
+              <div className='flex items-center absolute gap-3 z-10 bottom-16 right-20'>
+                <Link
+                  to={`/edit-carus/${item._id}`}
+                  className='bg-blue-500 text-white rounded-full p-5 hover:bg-blue-600 transition-all'
+                >
+                  <Pencil size={20} />
+                </Link>
+                {data.length > 1 ? (
+                  <button
+                    onClick={() => setShowConfirm(!showConfirm)}
+                    className='bg-red-500 text-white rounded-full p-5 hover:bg-red-600 transition-all'
+                  >
+                    <Trash2 size={20} />
+                  </button>
+                ) : null}
+              </div>
             </SwiperSlide>
           ))
         ) : (

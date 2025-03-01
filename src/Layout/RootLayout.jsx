@@ -7,8 +7,7 @@ import { SetAlertErr } from '../Components/SetAlertErr'
 import { ConfirmAlert } from '../Components/ConfirmAlert'
 
 export const RootLayout = () => {
-  const { showConfirm, sideBar, setShowConfirm, showAlerterr, showAlertInfo } =
-    useContext(ContextData)
+  const { showConfirm, sideBar, showAlerterr } = useContext(ContextData)
   return (
     <div className='h-screen overflow-hidden'>
       <Header />

@@ -42,7 +42,7 @@ export const Products = () => {
   }
 
   return (
-    <div className='p-8 bg-pink-100 min-h-screen h-screen pb-[100px] overflow-y-auto'>
+    <div className='py-8 px-2 bg-pink-100 min-h-screen h-screen pb-[100px] overflow-y-auto'>
       <div className='w-full border-b border-pink-300 flex-wrap gap-3 flex justify-between items-center p-4'>
         <h1 className='text-3xl text-pink-700 font-bold'>Products </h1>
         <Link
@@ -69,7 +69,7 @@ export const Products = () => {
             return (
               <div
                 key={product._id}
-                className='bg-white rounded-md shadow-lg overflow-hidden hover:scale-110 transition-all duration-200 relative'
+                className='bg-white rounded-md shadow-lg overflow-hidden hover:scale-105 transition-all duration-200 relative'
               >
                 {product.sale > 0 && (
                   <div className='absolute z-10 top-2 right-2 bg-red-500 text-white px-2 py-1 text-sm font-bold rounded'>

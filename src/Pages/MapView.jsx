@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom'
 
 const center = { lat: 40.9983, lng: 71.6726 }
 
-
 export const ViewMap = () => {
   const [locations, setLocations] = useState([])
 
