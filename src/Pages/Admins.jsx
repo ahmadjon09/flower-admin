@@ -14,7 +14,8 @@ import { ContextData } from '../Context/Context'
 export const Admins = () => {
   const dispatch = useDispatch()
   const { data, isPending, isError } = useSelector(state => state.admins)
-  const { showConfirm, setShowConfirm } = useContext(ContextData)
+  const { setDelete_, delete_, setShowConfirm, setIsErr, setShowAlerterr } =
+    useContext(ContextData)
 
   useEffect(() => {
     const getAllAdmins = async () => {
@@ -23,14 +24,16 @@ export const Admins = () => {
         const response = await Axios.get('admin')
         dispatch(getAdminsSuccess(response.data?.data || []))
       } catch (error) {
-        dispatch(
-          getAdminsError(error.response?.data?.message || 'Unknown error')
-        )
+        setShowAlerterr(error.response?.data?.message || 'Unknown error')
+        setIsErr(true)
       }
     }
     getAllAdmins()
   }, [dispatch])
-
+  const handleDelete = id => {
+    setShowConfirm(true)
+    setDelete_(['admin', `${id}`])
+  }
   return (
     <div className='p-6 bg-gradient-to-b from-pink-100 to-white min-h-screen h-screen pb-[100px] overflow-y-auto'>
       <div className='w-full border-b border-pink-300 flex-wrap gap-3 flex justify-between items-center p-4'>
@@ -76,7 +79,7 @@ export const Admins = () => {
                 </Link>
                 {data.length > 1 ? (
                   <button
-                    onClick={() => setShowConfirm(!showConfirm)}
+                    onClick={() => handleDelete(admin._id)}
                     className='bg-red-500 text-white rounded-full p-2 hover:bg-red-600 transition-all'
                   >
                     <Trash2 size={16} />

@@ -10,8 +10,8 @@ export const UserUpdate = () => {
     newPassword: ''
   })
   const [isPending, setIsPending] = useState(false)
-  const [isError, setIsError] = useState('')
-  const { setShowAlertInfo, setShowAlerterr } = useContext(ContextData)
+  const { setShowAlertInfo, setShowAlerterr, setIsErr } =
+    useContext(ContextData)
   useEffect(() => {
     const getUser = async () => {
       try {
@@ -21,9 +21,11 @@ export const UserUpdate = () => {
           setUserData(prev => ({ ...prev, [key]: data[key] }))
         }
       } catch (error) {
-        setIsError(error.response?.data?.message || 'An error occurred.')
+        setIsErr(true)
+        setShowAlertInfo(error.response?.data?.message)
       } finally {
         setIsPending(false)
+        setIsErr(false)
       }
     }
     getUser()
@@ -48,7 +50,9 @@ export const UserUpdate = () => {
       setShowAlertInfo('Admin updated successfully ')
       setShowAlerterr(true)
     } catch (error) {
-      console.log(error)
+      setShowAlerterr(true)
+      setIsErr(true)
+      setShowAlertInfo(error.response?.data?.message)
     }
   }
 

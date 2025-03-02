@@ -8,12 +8,12 @@ import {
 } from '../Toolkit/ProductsSlicer'
 import { Link } from 'react-router-dom'
 import { ContextData } from '../Context/Context'
-import { ConfirmAlert } from '../Components/ConfirmAlert'
 
 export const Products = () => {
   const dispatch = useDispatch()
   const { data, isPending, isError } = useSelector(state => state.products)
-  const { showConfirm, setShowConfirm } = useContext(ContextData)
+  const { setShowAlerterr, setShowConfirm, setDelete_, delete_, setIsErr } =
+    useContext(ContextData)
 
   useEffect(() => {
     const getAllProducts = async () => {
@@ -22,23 +22,16 @@ export const Products = () => {
         const response = await Axios.get('product')
         dispatch(getProductSuccess(response.data?.data || []))
       } catch (error) {
-        dispatch(
-          getProductError(error.response?.data?.message || 'Unknown error')
-        )
+        setShowAlerterr(error.response?.data?.message || 'Unknown error')
+        setIsErr(true)
       }
     }
     getAllProducts()
   }, [dispatch])
 
-  const handleDelete = async id => {
-    if (!window.confirm('Are you sure you want to delete this product?')) return
-    try {
-      await Axios.delete(`product/${id}`)
-      dispatch(getProductSuccess(data.filter(product => product._id !== id)))
-      alert('Product deleted successfully')
-    } catch (error) {
-      alert(error.response?.data?.message || 'Failed to delete product')
-    }
+  const handleDelete = id => {
+    setShowConfirm(true)
+    setDelete_(['product', `${id}`])
   }
 
   return (
@@ -112,7 +105,7 @@ export const Products = () => {
                       Edit
                     </Link>
                     <button
-                      onClick={() => setShowConfirm(!showConfirm)}
+                      onClick={() => handleDelete(product._id)}
                       className='bg-red-600 text-white rounded-md px-3 py-1 text-sm hover:bg-red-700'
                     >
                       Delete

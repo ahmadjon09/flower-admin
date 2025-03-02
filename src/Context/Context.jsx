@@ -7,6 +7,8 @@ export const Context = ({ children }) => {
   const [showAlerterr, setShowAlerterr] = useState(false)
   const [showAlertInfo, setShowAlertInfo] = useState('')
   const [sideBar, setSideBar] = useState(false)
+  const [isErr, setIsErr] = useState(false)
+  const [delete_, setDelete_] = useState([])
   return (
     <ContextData.Provider
       value={{
@@ -17,7 +19,11 @@ export const Context = ({ children }) => {
         showAlertInfo,
         showAlerterr,
         setShowAlertInfo,
-        setShowAlerterr
+        setShowAlerterr,
+        setIsErr,
+        isErr,
+        setDelete_,
+        delete_
       }}
     >
       {children}

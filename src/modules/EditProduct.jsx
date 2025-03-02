@@ -6,7 +6,8 @@ import { ContextData } from '../Context/Context'
 export const EditProduct = () => {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { setShowAlertInfo, setShowAlerterr } = useContext(ContextData)
+  const { setShowAlertInfo, setShowAlerterr, setIsErr } =
+    useContext(ContextData)
 
   const [productData, setProductData] = useState({
     description: '',
@@ -19,7 +20,6 @@ export const EditProduct = () => {
   })
 
   const [isPending, setIsPending] = useState(false)
-  const [isError, setIsError] = useState('')
   const [imagePending, setImagePending] = useState(false)
 
   useEffect(() => {
@@ -29,9 +29,11 @@ export const EditProduct = () => {
         const { data } = await Axios.get(`/product/${id}`)
         setProductData(data.data)
       } catch (error) {
-        setIsError(error.response?.data?.message || 'An error occurred.')
+        setShowAlertInfo(error.response?.data?.message || 'An error occurred.')
+        setIsErr(true)
       } finally {
         setIsPending(false)
+        setIsErr(false)
       }
     }
     getProduct()
@@ -55,10 +57,12 @@ export const EditProduct = () => {
         ...prevData,
         photos: data.images
       }))
-    } catch (err) {
-      console.error(err)
+    } catch (error) {
+      setShowAlertInfo(error.response?.data?.message || 'An error occurred.')
+      setIsErr(true)
     } finally {
-      setImagePending(false)
+      setIsPending(false)
+      setIsErr(false)
     }
   }
 
@@ -70,7 +74,9 @@ export const EditProduct = () => {
       setShowAlertInfo('Product updated successfully')
       setShowAlerterr(true)
     } catch (error) {
-      console.error(error.response?.data?.message || 'An error occurred.')
+      setShowAlerterr(true)
+      setIsErr(true)
+      setShowAlertInfo(error.response?.data?.message)
     }
   }
 

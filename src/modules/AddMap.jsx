@@ -13,7 +13,8 @@ export const AddMap = () => {
 
   const [marker, setMarker] = useState(null)
   const [mapsName, setMapsName] = useState('')
-  const { setShowAlertInfo, setShowAlerterr } = useContext(ContextData)
+  const { setShowAlertInfo, setShowAlerterr, setIsErr } =
+    useContext(ContextData)
   const MapClickHandler = () => {
     useMapEvents({
       click: e => {
@@ -31,6 +32,7 @@ export const AddMap = () => {
     if (!marker || !mapsName) {
       setShowAlertInfo('Enter a location name and select a place!')
       setShowAlerterr(true)
+      setIsErr(true)
     }
 
     const mapData = {
@@ -47,7 +49,9 @@ export const AddMap = () => {
         setShowAlertInfo('Location added successfully ')
         setShowAlerterr(true)
       } catch (error) {
-        console.error('Error:', error)
+        setShowAlerterr(true)
+        setShowAlertInfo('Error:', error)
+        setIsErr(true)
       }
     }
   }

@@ -18,11 +18,12 @@ import { Link } from 'react-router-dom'
 
 export const Dashboard = () => {
   const dispatch = useDispatch()
-  const { data, isPending, isError } = useSelector(state => state.carousel)
+  const { data, isPending } = useSelector(state => state.carousel)
   const user = useSelector(state => state.user.data?.data || {})
   const progressCircle = useRef(null)
   const progressContent = useRef(null)
-  const { showConfirm, setShowConfirm } = useContext(ContextData)
+  const { showConfirm, setShowConfirm, setIsErr, setShowAlerterr } =
+    useContext(ContextData)
 
   useEffect(() => {
     const getAllCarousel = async () => {
@@ -31,9 +32,8 @@ export const Dashboard = () => {
         const response = await Axios.get('carousel')
         dispatch(getCarouselSuccess(response.data?.data || []))
       } catch (error) {
-        dispatch(
-          getCarouselError(error.response?.data?.message || 'Unknown error')
-        )
+        setShowAlerterr(error.response?.data?.message || 'Unknown error')
+        setIsErr(true)
       }
     }
     getAllCarousel()
@@ -50,44 +50,55 @@ export const Dashboard = () => {
   }
 
   return (
-    <div className='w-full h-screen overflow-y-auto pb-[100px]  bg-pink-100'>
-      <div className='flex justify-between flex-wrap gap-3 h-[150px] p-5 items-center border-b border-pink-300'>
-        <div className='flex text-pink-600  items-center gap-3'>
-          <img
-            src={user.avatar}
-            width={'50px'}
-            alt='User Avatar'
-            className='rounded-full object-cover border-2 border-pink-500'
-          />
+    <div className='w-full h-screen overflow-y-auto pb-[100px] bg-pink-100'>
+      <div className='flex justify-between flex-wrap gap-3 min-h-[100px] p-5 items-center border-b border-pink-300'>
+        <div className='flex text-pink-600 items-center gap-3'>
+          {isPending ? (
+            <p className='text-sm'>Loading</p>
+          ) : (
+            <img
+              src={user.avatar}
+              width={'50px'}
+              alt='User Avatar'
+              z
+              className='rounded-full object-cover border-2 border-pink-500'
+            />
+          )}
           <div className='flex flex-col'>
-            <h1 className='font-bold'>
-              {user.lastName + ' ' + user.firstName}
+            <h1 className='font-bold text-lg sm:text-xl'>
+              {user.lastName} {user.firstName}
             </h1>
             <p className='text-sm text-gray-600'>+(998) {user.phoneNumber}</p>
           </div>
         </div>
-        <button
-          onClick={() => Logout()}
-          className='flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-2xl font-bold hover:bg-red-400 transition-all'
-        >
-          Logout <LogOut size={14} />
-        </button>
+        <div className='flex gap-2 flex-wrap'>
+          <button
+            onClick={() => Logout()}
+            className='flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-full font-bold hover:bg-red-400 transition-all'
+          >
+            Logout <LogOut size={14} />
+          </button>
+          <Link
+            to={'+carousel'}
+            className='bg-pink-700 text-white px-6 py-3 rounded-full shadow-lg hover:bg-pink-800 transition-all'
+          >
+            + Carousel
+          </Link>
+        </div>
       </div>
       <br />
       <Swiper
-        spaceBetween={30}
+        spaceBetween={15}
         centeredSlides={true}
         autoplay={{
           delay: 2500,
           disableOnInteraction: false
         }}
-        pagination={{
-          clickable: true
-        }}
-        navigation={true}
+        pagination={{ clickable: true }}
+        // navigation={true}
         modules={[Autoplay, Pagination, Navigation]}
         onAutoplayTimeLeft={onAutoplayTimeLeft}
-        className='mySwiper h-[500px]'
+        className='mySwiper h-[300px] sm:h-[400px] md:h-[500px] px-2'
       >
         {isPending ? (
           <SwiperSlide className='flex items-center justify-center text-lg font-bold text-gray-600'>
@@ -101,29 +112,29 @@ export const Dashboard = () => {
             >
               <img
                 src={item.photos[0]}
-                className='w-full h-full object-center rounded-lg shadow-lg'
+                className='w-full h-full object-cover rounded-lg shadow-lg'
               />
-              <div className='absolute inset-0 flex flex-col justify-center items-start text-white text-left px-6 sm:px-8 py-4'>
-                <span className='text-xs sm:text-sm md:text-lg font-asul font-bold tracking-widest mb-2'>
+              <div className='absolute inset-0 flex flex-col justify-center items-start text-white text-left px-4 sm:px-6 md:px-8 py-2 sm:py-4'>
+                <span className='text-xs sm:text-sm md:text-lg font-bold tracking-widest mb-1 sm:mb-2'>
                   {item.title}
                 </span>
-                <h1 className='text-lg sm:text-xl md:text-3xl font-asul font-bold tracking-widest sm:w-[25rem] md:w-[29rem]'>
+                <h1 className='text-sm sm:text-lg md:text-2xl font-bold tracking-widest sm:w-[20rem] md:w-[25rem]'>
                   {item.description}
                 </h1>
               </div>
-              <div className='flex items-center absolute gap-3 z-10 bottom-16 right-20'>
+              <div className='flex items-center absolute gap-3 z-10 bottom-10 right-10 sm:right-14'>
                 <Link
                   to={`/edit-carus/${item._id}`}
-                  className='bg-blue-500 text-white rounded-full p-5 hover:bg-blue-600 transition-all'
+                  className='bg-blue-500 text-white rounded-full p-3 sm:p-4 hover:bg-blue-600 transition-all'
                 >
-                  <Pencil size={20} />
+                  <Pencil size={16} sm:size={20} />
                 </Link>
                 {data.length > 1 ? (
                   <button
                     onClick={() => setShowConfirm(!showConfirm)}
-                    className='bg-red-500 text-white rounded-full p-5 hover:bg-red-600 transition-all'
+                    className='bg-red-500 text-white rounded-full p-3 sm:p-4 hover:bg-red-600 transition-all'
                   >
-                    <Trash2 size={20} />
+                    <Trash2 size={16} sm:size={20} />
                   </button>
                 ) : null}
               </div>

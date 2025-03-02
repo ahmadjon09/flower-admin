@@ -6,7 +6,8 @@ import { ContextData } from '../Context/Context'
 export const UpdateTeam = () => {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { setShowAlertInfo, setShowAlerterr } = useContext(ContextData)
+  const { setShowAlertInfo, setShowAlerterr, setIsErr } =
+    useContext(ContextData)
 
   const [teamData, setTeamData] = useState({
     name: '',
@@ -18,7 +19,6 @@ export const UpdateTeam = () => {
   })
 
   const [isPending, setIsPending] = useState(false)
-  const [isError, setIsError] = useState('')
   const [imagePending, setImagePending] = useState(false)
 
   useEffect(() => {
@@ -28,9 +28,11 @@ export const UpdateTeam = () => {
         const { data } = await Axios.get(`/teams/${id}`)
         setTeamData(data.OneTeam)
       } catch (error) {
-        setIsError(error.response?.data?.message || 'An error occurred.')
+        setShowAlertInfo(error.response?.data?.message || 'An error occurred.')
+        setIsErr(true)
       } finally {
         setIsPending(false)
+        setIsErr(false)
       }
     }
     getTeam()
@@ -54,10 +56,10 @@ export const UpdateTeam = () => {
         ...prevData,
         photos: [...data.photos]
       }))
-    } catch (err) {
-      console.error(err)
-    } finally {
-      setImagePending(false)
+    } catch (error) {
+      setShowAlerterr(true)
+      setIsErr(true)
+      setShowAlertInfo(error.response?.data?.message)
     }
   }
 
@@ -77,7 +79,6 @@ export const UpdateTeam = () => {
     <div className='min-h-screen h-screen overflow-y-auto pb-[100px] flex flex-col items-center bg-gradient-to-br from-pink-100 to-pink-200 p-6'>
       <h1 className='text-5xl font-bold text-pink-700 mb-6'>Edit Team</h1>
       {isPending && <p className='text-blue-500'>Loading...</p>}
-      {isError && <p className='text-red-500'>{isError}</p>}
       <form
         onSubmit={handleFormSubmit}
         className='bg-white shadow-lg rounded-xl p-6 w-full max-w-lg flex flex-col space-y-4 border border-pink-300'

@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import Axios from '../Axios'
 import { useNavigate } from 'react-router-dom'
+import { ContextData } from '../Context/Context'
 
 export const AddProduct = () => {
   const navigate = useNavigate()
@@ -15,7 +16,8 @@ export const AddProduct = () => {
     stock: 0,
     title: ''
   })
-
+  const { setShowAlertInfo, setShowAlerterr, setIsErr } =
+    useContext(ContextData)
   const handleInputChange = e => {
     const { name, value } = e.target
     setProductData(prevData => ({ ...prevData, [name]: value }))
@@ -34,8 +36,10 @@ export const AddProduct = () => {
         ...prevData,
         photos: data.images
       }))
-    } catch (err) {
-      console.error(err)
+    } catch (error) {
+      setShowAlerterr(true)
+      setIsErr(true)
+      setShowAlertInfo(error.response?.data?.message)
     } finally {
       setImagePending(false)
     }
@@ -53,10 +57,12 @@ export const AddProduct = () => {
       setIsPending(true)
       await Axios.post('/product/create', productData)
       navigate('/products')
+      setShowAlerterr(true)
+      setShowAlertInfo('Product added successfully')
     } catch (error) {
-      console.error(error)
-    } finally {
-      setIsPending(false)
+      setShowAlerterr(true)
+      setIsErr(true)
+      setShowAlertInfo(error.response?.data?.message)
     }
   }
 

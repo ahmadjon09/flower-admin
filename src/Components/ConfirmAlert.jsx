@@ -1,10 +1,12 @@
 import { AlertTriangle } from 'lucide-react'
 import React, { useContext, useEffect, useState } from 'react'
 import { ContextData } from '../Context/Context'
+import { DeleteItems } from '../modules/DeleteItems'
 
 export const ConfirmAlert = ({ message }) => {
   const [visible, setVisible] = useState(false)
-  const { setShowConfirm, setShowAlerterr } = useContext(ContextData)
+  const { setShowConfirm, setShowAlerterr, delete_ } = useContext(ContextData)
+  const deleteItem = DeleteItems(delete_[0], delete_[1])
 
   useEffect(() => {
     if (message) {
@@ -13,9 +15,10 @@ export const ConfirmAlert = ({ message }) => {
   }, [message])
 
   const handleConfirm = () => {
-    console.log('User confirmed!')
     setVisible(false)
     setShowAlerterr(true)
+    setShowConfirm(false)
+    deleteItem()
   }
 
   const handleCancel = () => {
@@ -25,7 +28,7 @@ export const ConfirmAlert = ({ message }) => {
 
   return (
     <div
-      className={`fixed top-0 left-0 w-full h-screen z-20 px-2 bg-black/50 flex items-center justify-center transition-opacity duration-500 ${
+      className={`fixed top-0 left-0 w-full h-screen z-[9999] px-2 bg-black/50 flex items-center justify-center transition-opacity duration-500 ${
         visible ? 'opacity-100' : 'opacity-0 pointer-events-none'
       }`}
     >

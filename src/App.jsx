@@ -64,16 +64,16 @@ function App () {
           element: <RootLayout />,
           children: [
             { index: true, element: <Dashboard /> },
-            { path: 'admins', element: <Admins /> },
+            { path: 'admin', element: <Admins /> },
             { path: 'edit-admin/:id', element: <UserUpdate /> },
             { path: 'create-admin', element: <AddNewAdmin /> },
-            { path: 'products', element: <Products /> },
+            { path: 'product', element: <Products /> },
             { path: 'products/edit/:id', element: <EditProduct /> },
             { path: 'create-product', element: <AddProduct /> },
-            { path: 'team', element: <Team /> },
+            { path: 'teams', element: <Team /> },
             { path: 'team-edit/:id', element: <UpdateTeam /> },
             { path: 'add-maps', element: <AddMap /> },
-            { path: 'maps', element: <ViewMap /> },
+            { path: 'map', element: <ViewMap /> },
             { path: '*', element: <Error /> }
           ]
         }

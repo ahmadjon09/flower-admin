@@ -40,7 +40,7 @@ export const Sidebar = () => {
         </li>
         <li>
           <NavLink
-            to={'/admins'}
+            to={'/admin'}
             className='flex items-center gap-2 text-xl text-yellow-500 p-5'
           >
             <UserCheck />
@@ -49,7 +49,7 @@ export const Sidebar = () => {
         </li>
         <li>
           <NavLink
-            to={'/products'}
+            to={'/product'}
             className='flex items-center gap-2 text-xl text-yellow-500 p-5'
           >
             <Package />
@@ -58,7 +58,7 @@ export const Sidebar = () => {
         </li>
         <li>
           <NavLink
-            to={'/team'}
+            to={'/teams'}
             className='flex items-center gap-2 text-xl text-yellow-500 p-5'
           >
             <Users />
@@ -67,7 +67,7 @@ export const Sidebar = () => {
         </li>
         <li>
           <NavLink
-            to={'/maps'}
+            to={'/map'}
             className='flex items-center gap-2 text-xl text-yellow-500 p-5'
           >
             <MapPinPlus />

@@ -13,7 +13,8 @@ import { ContextData } from '../Context/Context'
 export const Team = () => {
   const dispatch = useDispatch()
   const { data, isPending, isError } = useSelector(state => state.team)
-  const { showConfirm, setShowConfirm } = useContext(ContextData)
+  const { setShowAlerterr, setShowConfirm, setDelete_, delete_, setIsErr } =
+    useContext(ContextData)
   useEffect(() => {
     const getAllTeam = async () => {
       dispatch(getTeamPending())
@@ -21,14 +22,18 @@ export const Team = () => {
         const response = await Axios.get('teams')
         dispatch(getTeamSuccess(response.data?.data || []))
       } catch (error) {
-        dispatch(getTeamError(error.response?.data?.message || 'Unknown error'))
+        setShowAlerterr(error.response?.data?.message || 'Unknown error')
+        setIsErr(true)
       }
     }
     getAllTeam()
   }, [dispatch])
-
+  const handleDelete = id => {
+    setShowConfirm(true)
+    setDelete_(['teams', `${id}`])
+  }
   return (
-    <div className='p-8 bg-pink-100 text-gray-900 min-h-screen h-screen pb-[100px] overflow-y-auto'>
+    <div className='p-2 bg-pink-100 text-gray-900 min-h-screen h-screen pb-[100px] overflow-y-auto'>
       <div className='w-full flex flex-wrap gap-3 justify-between items-center p-3 border-b border-pink-300'>
         <h1 className='text-4xl font-bold text-pink-700'>Team</h1>
         <Link
@@ -98,7 +103,7 @@ export const Team = () => {
                     Edit
                   </Link>
                   <button
-                    onClick={() => setShowConfirm(!showConfirm)}
+                    onClick={() => handleDelete(team._id)}
                     className='bg-red-500 text-white rounded-lg px-4 py-2 text-sm hover:bg-red-400 transition-all'
                   >
                     Delete
