@@ -1,29 +1,12 @@
-import { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import Axios from '../Axios'
-import {
-  getProductError,
-  getProductPending,
-  getProductSuccess
-} from '../Toolkit/ProductsSlicer'
 import { Link } from 'react-router-dom'
+import useSWR from 'swr'
+import { fetcher } from '../Middlewares/Fetcher'
 
 export const Products = () => {
-  const dispatch = useDispatch()
-  const { data, isPending, isError } = useSelector(state => state.products)
+  const { data, error, isLoading } = useSWR('/product', fetcher)
 
-  useEffect(() => {
-    const getAllProducts = async () => {
-      dispatch(getProductPending())
-      try {
-        const response = await Axios.get('product')
-        dispatch(getProductSuccess(response.data?.data || []))
-      } catch (error) {
-        console.log(error)
-      }
-    }
-    getAllProducts()
-  }, [dispatch])
+  if (error) return <div>ошибка загрузки</div>
+  if (isLoading) return <div>загрузка...</div>
 
   return (
     <div className='p-4'>
@@ -37,15 +20,9 @@ export const Products = () => {
         </Link>
       </div>
       <br />
-      {isPending ? (
-        <div className='flex justify-center items-center mt-10'>
-          <p className='text-xl text-gray-600'>Loading...</p>
-        </div>
-      ) : isError ? (
-        <p className='text-red-500 text-center text-xl'>Error: {isError}</p>
-      ) : data.length > 0 ? (
+      {data.data && data.data.length > 0 ? (
         <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'>
-          {data.map(product => {
+          {data.data.map(product => {
             const discountedPrice =
               product.sale > 0
                 ? product.price - product.price * (product.sale / 100)

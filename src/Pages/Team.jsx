@@ -1,31 +1,11 @@
-import { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import Axios from '../Axios'
-import {
-  getTeamError,
-  getTeamPending,
-  getTeamSuccess
-} from '../Toolkit/TeamSlicer'
 import { FacebookLogo, InstagramLogo, TwitterLogo } from '@phosphor-icons/react'
 import { Link } from 'react-router-dom'
+import { fetcher } from '../Middlewares/Fetcher'
+import useSWR from 'swr'
 
 export const Team = () => {
-  const dispatch = useDispatch()
-  const { data, isPending, isError } = useSelector(state => state.team)
-
-  useEffect(() => {
-    const getAllTeam = async () => {
-      dispatch(getTeamPending())
-      try {
-        const response = await Axios.get('teams')
-        dispatch(getTeamSuccess(response.data?.data || []))
-      } catch (error) {
-        console.log(error)
-      }
-    }
-    getAllTeam()
-  }, [dispatch])
-
+  const { data, error, isLoading } = useSWR('/teams', fetcher)
+  const data_ = data?.data
   return (
     <div className='p-2 bg-pink-100 text-gray-900 min-h-screen h-screen pb-[100px] overflow-y-auto'>
       <div className='w-full flex flex-wrap gap-3 justify-between items-center p-3 border-b border-pink-300'>
@@ -38,20 +18,18 @@ export const Team = () => {
         </Link>
       </div>
       <br />
-      {isPending ? (
+      {isLoading ? (
         <div className='flex justify-center items-center mt-10'>
           <p className='text-xl text-pink-400 animate-pulse'>Loading...</p>
         </div>
-      ) : isError ? (
-        <p className='text-red-500 text-center text-xl mt-6'>
-          Error: {isError}
-        </p>
-      ) : data.length > 0 ? (
+      ) : error ? (
+        <p className='text-red-500 text-center text-xl mt-6'>Error: {error}</p>
+      ) : data_.length > 0 ? (
         <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'>
-          {data.map(team => (
+          {data_.map(team => (
             <div
               key={team._id}
-              className='bg-white border border-pink-300 rounded-xl shadow-lg overflow-hidden relative text-center p-4 hover:scale-105 transition-transform duration-300'
+              className='bg-white border border-pink-300 rounded-xl shadow-lg overflow-hidden relative text-center p-4 '
             >
               <div className='w-full max-h-72 h-72 overflow-hidden rounded-md'>
                 <img

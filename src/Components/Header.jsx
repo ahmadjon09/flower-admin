@@ -8,7 +8,7 @@ export const Header = () => {
         <ul className={`h-full flex items-center justify-center gap-5`}>
           <li>
             <NavLink to={'/'} className='text-white'>
-              Carousel
+              Settings
             </NavLink>
           </li>
           <li>

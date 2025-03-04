@@ -1,34 +1,32 @@
-import { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import Axios from '../Axios'
-import {
-  getAdminsError,
-  getAdminsPending,
-  getAdminsSuccess
-} from '../Toolkit/AdminsSlicer'
 import { Pencil, Trash2 } from 'lucide-react'
+import useSWR, { mutate } from 'swr'
+import { fetcher } from '../Middlewares/Fetcher'
+import Axios from '../Axios'
+import { useState } from 'react'
+import { UserUpdate } from '../Components/userUpdate'
 
 export const Admins = () => {
-  const dispatch = useDispatch()
-  const { data, isPending, isError } = useSelector(state => state.admins)
-
-  useEffect(() => {
-    const getAllAdmins = async () => {
-      dispatch(getAdminsPending())
-      try {
-        const response = await Axios.get('admin')
-        dispatch(getAdminsSuccess(response.data?.data || []))
-      } catch (error) {
-        console.log(error)
-      }
+  const { data, isLoading } = useSWR('/admin', fetcher)
+  const [showUp, setShowUp] = useState(false)
+  const handleDelete = async id => {
+    if (!window.confirm('Are you sure you want to delete this admin?')) return
+    try {
+      await Axios.delete(`admin/${id}`)
+      mutate(
+        '/admin',
+        data.data.filter(admin => admin._id !== id),
+        true
+      )
+      alert('Admin deleted successfully')
+    } catch (error) {
+      alert(error.response?.data?.message || 'Failed to delete admin')
     }
-    getAllAdmins()
-  }, [dispatch])
+  }
 
   return (
-    <div className='p-6 bg-gradient-to-b from-pink-100 to-white min-h-screen h-screen pb-[100px] overflow-y-auto'>
-      <div className='w-full border-b border-pink-300 flex-wrap gap-3 flex justify-between items-center p-4'>
+    <div className='p-6'>
+      <div className='w-full flex-wrap gap-3 flex justify-between items-center p-4'>
         <h1 className='text-3xl text-pink-700 font-bold'>Admins</h1>
         <Link
           to={'/create-admin'}
@@ -38,16 +36,14 @@ export const Admins = () => {
         </Link>
       </div>
       <br />
-      {isPending ? (
-        <p className='text-center text-pink-700'>Loading...</p>
-      ) : isError ? (
-        <p className='text-red-500 text-center text-xl'>Error: {isError}</p>
-      ) : data.length > 0 ? (
+      {isLoading ? (
+        <h1>Loading...</h1>
+      ) : data?.data?.length > 0 ? (
         <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'>
-          {data.map(admin => (
+          {data?.data.map(admin => (
             <div
               key={admin._id}
-              className='bg-white relative shadow-lg rounded-xl hover:scale-90 duration-200 p-4 flex flex-col items-center text-center transition-all hover:shadow-2xl'
+              className='bg-white relative shadow-lg rounded-xl p-4 flex flex-col items-center text-center hover:shadow-2xl'
             >
               <img
                 src={
@@ -62,14 +58,18 @@ export const Admins = () => {
               </h3>
               <p className='text-gray-600'>+(998) {admin.phoneNumber}</p>
               <div className='flex gap-3 mt-4'>
-                <Link
-                  to={`/edit-admin/${admin._id}`}
+                <button
+                  // to={`/edit-admin/${admin._id}`}
+                  onClick={() => setShowUp(true)}
                   className='bg-blue-500 text-white rounded-full p-2 hover:bg-blue-600 transition-all'
                 >
                   <Pencil size={16} />
-                </Link>
-                {data.length > 1 ? (
-                  <button className='bg-red-500 text-white rounded-full p-2 hover:bg-red-600 transition-all'>
+                </button>
+                {data?.data.length > 1 ? (
+                  <button
+                    onClick={() => handleDelete(admin._id)}
+                    className='bg-red-500 text-white rounded-full p-2 hover:bg-red-600 transition-all'
+                  >
                     <Trash2 size={16} />
                   </button>
                 ) : null}

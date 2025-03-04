@@ -32,7 +32,6 @@ function App () {
   const dispatch = useDispatch()
 
   const [isLoading, setIsLoading] = useState(true)
-  const is_auth = Cookies.get('is_auth')
 
   useEffect(() => {
     const getMyData = async () => {

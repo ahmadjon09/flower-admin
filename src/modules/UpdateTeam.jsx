@@ -60,7 +60,7 @@ export const UpdateTeam = () => {
     e.preventDefault()
     try {
       await Axios.put(`teams/${id}`, teamData)
-      navigate('/team')
+      navigate('/teams')
     } catch (error) {
       console.error(error.response?.data?.message || 'An error occurred.')
     }

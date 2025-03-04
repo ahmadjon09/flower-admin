@@ -24,7 +24,7 @@ export const AddNewAdmin = () => {
     } catch (error) {
       setError(error.response?.data?.message || 'An error occurred')
     }
-    nav('/admins')
+    nav('/admin')
   }
 
   const handleInputChange = e => {

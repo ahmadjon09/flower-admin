@@ -1,34 +1,34 @@
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
-import { useEffect } from 'react'
 import 'leaflet/dist/leaflet.css'
-import Axios from '../Axios'
 import { Link } from 'react-router-dom'
-import { MapPinArea } from '@phosphor-icons/react/dist/ssr'
-import { X } from 'lucide-react'
-import { useDispatch, useSelector } from 'react-redux'
-import { getMapPending, getMapSuccess } from '../Toolkit/MapSlicer'
+import { Phone, X } from 'lucide-react'
+import { fetcher } from '../Middlewares/Fetcher'
+import useSWR, { mutate } from 'swr'
+import { Hourglass } from '@phosphor-icons/react'
+import Axios from '../Axios'
 
 const center = { lat: 40.9983, lng: 71.6726 }
 
 export const ViewMap = () => {
-  const dispatch = useDispatch()
-  const { data, isPending } = useSelector(state => state.map)
+  const { data, error, isLoading } = useSWR('/map', fetcher)
 
-  useEffect(() => {
-    const fetchLocations = async () => {
-      dispatch(getMapPending())
-      try {
-        const res = await Axios.get('/map')
-        dispatch(getMapSuccess(res?.data || []))
-      } catch (error) {
-        console.log(error)
-      }
+  const handleDelete = async id => {
+    if (!window.confirm('Are you sure you want to delete this location?'))
+      return
+    try {
+      await Axios.delete(`map/${id}`)
+      mutate(
+        '/map',
+        data.data?.filter(map => map._id !== id),
+        true
+      )
+      alert('Location deleted successfully')
+    } catch (error) {
+      alert(error.response?.data?.message || 'Failed to delete location')
     }
-    fetchLocations()
-  }, [])
-
+  }
   return (
-    <div className='flex flex-col items-center gap-6 p-4 bg-green-50 min-h-screen h-screen overflow-y-auto pb-[100px]'>
+    <div className='flex flex-col items-center gap-6 p-4 pb-[100px]'>
       <div className='w-full flex items-center justify-between pb-3 flex-wrap gap-3 border-b border-pink-300'>
         <h1 className='text-3xl font-bold text-pink-700'>🌸 Saved Locations</h1>
         <Link
@@ -40,16 +40,28 @@ export const ViewMap = () => {
       </div>
 
       <div className='w-full flex flex-col md:flex-row gap-6 items-center'>
-        <div className='flex flex-wrap gap-4 w-full md:w-1/3'>
-          {isPending ? null : data.length > 0 ? (
+        <div className='flex flex-col items-center justify-start max-h-[450px] overflow-y-auto w-full md:w-1/3'>
+          {isLoading ? null : data.length > 0 ? (
             data.map((loc, index) => (
-              <div
-                key={index}
-                className='bg-white p-4 rounded-lg shadow-md border border-pink-300'
-              >
-                <div className='text-pink-700 font-bold text-lg relative'>
-                  {loc.mapsName}
-                  <button className='flex absolute -top-7 -right-6 w-[20px] h-[20px] bg-red-500 text-white items-center justify-center rounded-full'>
+              <div key={index} className='w-full rounded-lg p-3'>
+                <div className='font- text-lg relative'>
+                  <h1>
+                    Location name: <b>{loc.name}</b>
+                  </h1>
+                  <h1>
+                    Street Name: <b>{loc.mapsName}</b>
+                  </h1>
+                  <h1>
+                    Phone number: <b>+(998) {loc.mapsPhone}</b>
+                  </h1>
+                  <h1 className='mb-2'>
+                    Operating mode: <b>{loc.mapsTime}</b>
+                  </h1>
+                  <hr />
+                  <button
+                    onClick={() => handleDelete(loc._id)}
+                    className='flex absolute -top-1.5 -right-1.5 w-[20px] h-[20px] bg-red-500 text-white items-center justify-center rounded-full'
+                  >
                     <X size={15} />
                   </button>
                 </div>
@@ -61,7 +73,7 @@ export const ViewMap = () => {
         </div>
 
         <div className='w-full md:w-2/3'>
-          {isPending ? (
+          {isLoading ? (
             <p>Loading..</p>
           ) : (
             <MapContainer
@@ -79,15 +91,14 @@ export const ViewMap = () => {
                   >
                     <Popup>
                       <div className='text-center'>
-                        <h2 className='font-bold text-pink-700'>
-                          {loc.mapsName}
-                        </h2>
-                        <div className='flex items-center justify-center flex-col'>
+                        <h2 className='font-bold text-pink-700'>{loc.name}</h2>
+                        <div className='flex items-start justify-center flex-col'>
                           <div className='flex items-center gap-1'>
-                            <MapPinArea /> Lat: {coord.lat}
+                            <Phone size={13} /> Phone number: +(998){' '}
+                            {loc.mapsPhone}
                           </div>
                           <div className='flex items-center gap-1'>
-                            <MapPinArea /> Lng: {coord.lng}
+                            <Hourglass /> Operating mode: {loc.mapsTime}
                           </div>
                         </div>
                       </div>

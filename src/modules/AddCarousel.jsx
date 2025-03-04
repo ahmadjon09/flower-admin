@@ -1,12 +1,9 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useSelector } from 'react-redux'
 import Axios from '../Axios'
 
 export const AddNewCarousel = () => {
   const [error, setError] = useState('')
-  const { isPending } = useSelector(state => state.carousel)
-
   const [carouselData, setCarouselData] = useState({
     title: '',
     lastName: '',
@@ -87,14 +84,14 @@ export const AddNewCarousel = () => {
         {error && <p className='text-red-500 text-sm text-center'>{error}</p>}
         <button
           type='submit'
-          disabled={isPending}
+          disabled={imagePending}
           className={`${
-            imagePending || isPending
+            imagePending
               ? 'bg-pink-400 cursor-not-allowed'
               : 'bg-gradient-to-r from-pink-500 to-purple-500 hover:from-purple-500 hover:to-pink-500'
           } w-full text-xl py-3 rounded-lg text-white font-bold transition-all duration-300`}
         >
-          {imagePending || isPending ? 'Loading...' : 'Submit'}
+          {imagePending ? 'Loading...' : 'Submit'}
         </button>
       </form>
     </div>
