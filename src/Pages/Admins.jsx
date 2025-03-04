@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import Axios from '../Axios'
@@ -8,14 +8,10 @@ import {
   getAdminsSuccess
 } from '../Toolkit/AdminsSlicer'
 import { Pencil, Trash2 } from 'lucide-react'
-import cardImg from '../data/card.png'
-import { ContextData } from '../Context/Context'
 
 export const Admins = () => {
   const dispatch = useDispatch()
   const { data, isPending, isError } = useSelector(state => state.admins)
-  const { setDelete_, delete_, setShowConfirm, setIsErr, setShowAlerterr } =
-    useContext(ContextData)
 
   useEffect(() => {
     const getAllAdmins = async () => {
@@ -24,16 +20,12 @@ export const Admins = () => {
         const response = await Axios.get('admin')
         dispatch(getAdminsSuccess(response.data?.data || []))
       } catch (error) {
-        setShowAlerterr(error.response?.data?.message || 'Unknown error')
-        setIsErr(true)
+        console.log(error)
       }
     }
     getAllAdmins()
   }, [dispatch])
-  const handleDelete = id => {
-    setShowConfirm(true)
-    setDelete_(['admin', `${id}`])
-  }
+
   return (
     <div className='p-6 bg-gradient-to-b from-pink-100 to-white min-h-screen h-screen pb-[100px] overflow-y-auto'>
       <div className='w-full border-b border-pink-300 flex-wrap gap-3 flex justify-between items-center p-4'>
@@ -55,9 +47,8 @@ export const Admins = () => {
           {data.map(admin => (
             <div
               key={admin._id}
-              className='bg-white relative shadow-lg rounded-xl hover:scale-110 duration-200 p-4 flex flex-col items-center text-center transition-all hover:shadow-2xl'
+              className='bg-white relative shadow-lg rounded-xl hover:scale-90 duration-200 p-4 flex flex-col items-center text-center transition-all hover:shadow-2xl'
             >
-              <img src={cardImg} alt='card' />
               <img
                 src={
                   admin.avatar ||
@@ -78,10 +69,7 @@ export const Admins = () => {
                   <Pencil size={16} />
                 </Link>
                 {data.length > 1 ? (
-                  <button
-                    onClick={() => handleDelete(admin._id)}
-                    className='bg-red-500 text-white rounded-full p-2 hover:bg-red-600 transition-all'
-                  >
+                  <button className='bg-red-500 text-white rounded-full p-2 hover:bg-red-600 transition-all'>
                     <Trash2 size={16} />
                   </button>
                 ) : null}

@@ -1,13 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Axios from '../Axios'
 import { useNavigate, useParams } from 'react-router-dom'
-import { ContextData } from '../Context/Context'
 
 export const UpdateTeam = () => {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { setShowAlertInfo, setShowAlerterr, setIsErr } =
-    useContext(ContextData)
 
   const [teamData, setTeamData] = useState({
     name: '',
@@ -28,11 +25,9 @@ export const UpdateTeam = () => {
         const { data } = await Axios.get(`/teams/${id}`)
         setTeamData(data.OneTeam)
       } catch (error) {
-        setShowAlertInfo(error.response?.data?.message || 'An error occurred.')
-        setIsErr(true)
+        console.log(error)
       } finally {
         setIsPending(false)
-        setIsErr(false)
       }
     }
     getTeam()
@@ -57,9 +52,7 @@ export const UpdateTeam = () => {
         photos: [...data.photos]
       }))
     } catch (error) {
-      setShowAlerterr(true)
-      setIsErr(true)
-      setShowAlertInfo(error.response?.data?.message)
+      console.log(error)
     }
   }
 
@@ -68,8 +61,6 @@ export const UpdateTeam = () => {
     try {
       await Axios.put(`teams/${id}`, teamData)
       navigate('/team')
-      setShowAlertInfo('Team updated successfully ')
-      setShowAlerterr(true)
     } catch (error) {
       console.error(error.response?.data?.message || 'An error occurred.')
     }

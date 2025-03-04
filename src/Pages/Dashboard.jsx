@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Axios from '../Axios'
 import Cookies from 'js-cookie'
@@ -9,11 +9,9 @@ import 'swiper/css'
 import 'swiper/css/pagination'
 import 'swiper/css/navigation'
 import {
-  getCarouselError,
   getCarouselPending,
   getCarouselSuccess
 } from '../Toolkit/CarouselSlicer'
-import { ContextData } from '../Context/Context'
 import { Link } from 'react-router-dom'
 
 export const Dashboard = () => {
@@ -22,8 +20,6 @@ export const Dashboard = () => {
   const user = useSelector(state => state.user.data?.data || {})
   const progressCircle = useRef(null)
   const progressContent = useRef(null)
-  const { showConfirm, setShowConfirm, setIsErr, setShowAlerterr } =
-    useContext(ContextData)
 
   useEffect(() => {
     const getAllCarousel = async () => {
@@ -32,8 +28,7 @@ export const Dashboard = () => {
         const response = await Axios.get('carousel')
         dispatch(getCarouselSuccess(response.data?.data || []))
       } catch (error) {
-        setShowAlerterr(error.response?.data?.message || 'Unknown error')
-        setIsErr(true)
+        console.log(error)
       }
     }
     getAllCarousel()
@@ -60,7 +55,6 @@ export const Dashboard = () => {
               src={user.avatar}
               width={'50px'}
               alt='User Avatar'
-              z
               className='rounded-full object-cover border-2 border-pink-500'
             />
           )}
@@ -95,7 +89,6 @@ export const Dashboard = () => {
           disableOnInteraction: false
         }}
         pagination={{ clickable: true }}
-        // navigation={true}
         modules={[Autoplay, Pagination, Navigation]}
         onAutoplayTimeLeft={onAutoplayTimeLeft}
         className='mySwiper h-[300px] sm:h-[400px] md:h-[500px] px-2'
@@ -130,10 +123,7 @@ export const Dashboard = () => {
                   <Pencil size={16} sm:size={20} />
                 </Link>
                 {data.length > 1 ? (
-                  <button
-                    onClick={() => setShowConfirm(!showConfirm)}
-                    className='bg-red-500 text-white rounded-full p-3 sm:p-4 hover:bg-red-600 transition-all'
-                  >
+                  <button className='bg-red-500 text-white rounded-full p-3 sm:p-4 hover:bg-red-600 transition-all'>
                     <Trash2 size={16} sm:size={20} />
                   </button>
                 ) : null}

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Axios from '../Axios'
 import {
@@ -8,13 +8,11 @@ import {
 } from '../Toolkit/TeamSlicer'
 import { FacebookLogo, InstagramLogo, TwitterLogo } from '@phosphor-icons/react'
 import { Link } from 'react-router-dom'
-import { ContextData } from '../Context/Context'
 
 export const Team = () => {
   const dispatch = useDispatch()
   const { data, isPending, isError } = useSelector(state => state.team)
-  const { setShowAlerterr, setShowConfirm, setDelete_, delete_, setIsErr } =
-    useContext(ContextData)
+
   useEffect(() => {
     const getAllTeam = async () => {
       dispatch(getTeamPending())
@@ -22,16 +20,12 @@ export const Team = () => {
         const response = await Axios.get('teams')
         dispatch(getTeamSuccess(response.data?.data || []))
       } catch (error) {
-        setShowAlerterr(error.response?.data?.message || 'Unknown error')
-        setIsErr(true)
+        console.log(error)
       }
     }
     getAllTeam()
   }, [dispatch])
-  const handleDelete = id => {
-    setShowConfirm(true)
-    setDelete_(['teams', `${id}`])
-  }
+
   return (
     <div className='p-2 bg-pink-100 text-gray-900 min-h-screen h-screen pb-[100px] overflow-y-auto'>
       <div className='w-full flex flex-wrap gap-3 justify-between items-center p-3 border-b border-pink-300'>

@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Axios from '../Axios'
 import {
@@ -7,13 +7,10 @@ import {
   getProductSuccess
 } from '../Toolkit/ProductsSlicer'
 import { Link } from 'react-router-dom'
-import { ContextData } from '../Context/Context'
 
 export const Products = () => {
   const dispatch = useDispatch()
   const { data, isPending, isError } = useSelector(state => state.products)
-  const { setShowAlerterr, setShowConfirm, setDelete_, delete_, setIsErr } =
-    useContext(ContextData)
 
   useEffect(() => {
     const getAllProducts = async () => {
@@ -22,27 +19,21 @@ export const Products = () => {
         const response = await Axios.get('product')
         dispatch(getProductSuccess(response.data?.data || []))
       } catch (error) {
-        setShowAlerterr(error.response?.data?.message || 'Unknown error')
-        setIsErr(true)
+        console.log(error)
       }
     }
     getAllProducts()
   }, [dispatch])
 
-  const handleDelete = id => {
-    setShowConfirm(true)
-    setDelete_(['product', `${id}`])
-  }
-
   return (
-    <div className='py-8 px-2 bg-pink-100 min-h-screen h-screen pb-[100px] overflow-y-auto'>
-      <div className='w-full border-b border-pink-300 flex-wrap gap-3 flex justify-between items-center p-4'>
-        <h1 className='text-3xl text-pink-700 font-bold'>Products </h1>
+    <div className='p-4'>
+      <div className='flex justify-between items-center'>
+        <h1 className='text-3xl font-bold'>Products </h1>
         <Link
           to={'/create-product'}
-          className='bg-pink-700 text-white px-4 py-2 rounded-full shadow hover:bg-pink-800 transition-all'
+          className='text-white p-2 bg-black block rounded-md'
         >
-          + Product
+          new product
         </Link>
       </div>
       <br />
@@ -62,7 +53,7 @@ export const Products = () => {
             return (
               <div
                 key={product._id}
-                className='bg-white rounded-md shadow-lg overflow-hidden hover:scale-105 transition-all duration-200 relative'
+                className='bg-white rounded-md shadow-lg overflow-hidden relative'
               >
                 {product.sale > 0 && (
                   <div className='absolute z-10 top-2 right-2 bg-red-500 text-white px-2 py-1 text-sm font-bold rounded'>
@@ -73,7 +64,7 @@ export const Products = () => {
                   <img
                     src={product.photos[0] || null}
                     alt='Product'
-                    className='w-full max-h-60 h-60 object-cover hover:scale-110 transition-all duration-700'
+                    className='w-full max-h-60 h-60 object-cover hover:scale-110 transition-all duration-200'
                   />
                 </div>
                 <div className='w-full p-4'>
@@ -97,7 +88,7 @@ export const Products = () => {
                       ? product.description.slice(0, 150) + ' ...'
                       : product.description || 'No description available'}
                   </p>
-                  <div className='flex justify-between items-center mt-4'>
+                  <div className='flex justify-end items-center gap-2'>
                     <Link
                       to={`/products/edit/${product._id}`}
                       className='bg-sky-600 text-white rounded-md px-3 py-1 text-sm hover:bg-sky-700'

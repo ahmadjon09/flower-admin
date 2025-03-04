@@ -24,34 +24,36 @@ import { UserUpdate } from './modules/UserUpdate'
 import { AddMap } from './modules/AddMap'
 import { ViewMap } from './Pages/MapView'
 import { UpdateTeam } from './modules/UpdateTeam'
+import { AddNewCarousel } from './modules/AddCarousel'
 
 function App () {
-  const dispatch = useDispatch()
   const { isAuth, isPending } = useSelector(state => state.user)
+
+  const dispatch = useDispatch()
+
   const [isLoading, setIsLoading] = useState(true)
   const is_auth = Cookies.get('is_auth')
-  if (is_auth) {
-    useEffect(() => {
-      const getMyData = async () => {
-        try {
-          dispatch(getUserPending())
-          const response = await Axios.get('admin/me')
 
-          if (response.data) {
-            dispatch(getUserSuccess(response.data))
-          } else {
-            dispatch(getUserError('No user data available'))
-          }
-        } catch (error) {
-          dispatch(getUserError(error.response?.data || 'Unknown Token'))
-        } finally {
-          setIsLoading(false)
+  useEffect(() => {
+    const getMyData = async () => {
+      try {
+        dispatch(getUserPending())
+        const response = await Axios.get('admin/me')
+
+        if (response.data) {
+          dispatch(getUserSuccess(response.data))
+        } else {
+          dispatch(getUserError('No user data available'))
         }
+      } catch (error) {
+        dispatch(getUserError(error.response?.data || 'Unknown Token'))
+      } finally {
+        setIsLoading(false)
       }
+    }
 
-      getMyData()
-    }, [dispatch])
-  }
+    getMyData()
+  }, [dispatch])
 
   if (isLoading || isPending) {
     return <Loading />
@@ -74,6 +76,7 @@ function App () {
             { path: 'team-edit/:id', element: <UpdateTeam /> },
             { path: 'add-maps', element: <AddMap /> },
             { path: 'map', element: <ViewMap /> },
+            { path: '+carousel', element: <AddNewCarousel /> },
             { path: '*', element: <Error /> }
           ]
         }

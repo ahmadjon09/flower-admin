@@ -1,13 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Axios from '../Axios'
 import { useNavigate, useParams } from 'react-router-dom'
-import { ContextData } from '../Context/Context'
 
 export const EditProduct = () => {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { setShowAlertInfo, setShowAlerterr, setIsErr } =
-    useContext(ContextData)
 
   const [productData, setProductData] = useState({
     description: '',
@@ -29,11 +26,9 @@ export const EditProduct = () => {
         const { data } = await Axios.get(`/product/${id}`)
         setProductData(data.data)
       } catch (error) {
-        setShowAlertInfo(error.response?.data?.message || 'An error occurred.')
-        setIsErr(true)
+        console.log(error)
       } finally {
         setIsPending(false)
-        setIsErr(false)
       }
     }
     getProduct()
@@ -58,11 +53,9 @@ export const EditProduct = () => {
         photos: data.images
       }))
     } catch (error) {
-      setShowAlertInfo(error.response?.data?.message || 'An error occurred.')
-      setIsErr(true)
+      console.log(error)
     } finally {
       setIsPending(false)
-      setIsErr(false)
     }
   }
 
@@ -71,12 +64,8 @@ export const EditProduct = () => {
     try {
       await Axios.put(`product/${id}`, productData)
       navigate('/products')
-      setShowAlertInfo('Product updated successfully')
-      setShowAlerterr(true)
     } catch (error) {
-      setShowAlerterr(true)
-      setIsErr(true)
-      setShowAlertInfo(error.response?.data?.message)
+      console.log(error)
     }
   }
 

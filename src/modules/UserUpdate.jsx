@@ -1,17 +1,18 @@
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import Axios from '../Axios'
-import { ContextData } from '../Context/Context'
 
 export const UserUpdate = () => {
   const navigate = useNavigate()
+
   const { id } = useParams()
+
   const [userData, setUserData] = useState({
     newPassword: ''
   })
+
   const [isPending, setIsPending] = useState(false)
-  const { setShowAlertInfo, setShowAlerterr, setIsErr } =
-    useContext(ContextData)
+
   useEffect(() => {
     const getUser = async () => {
       try {
@@ -21,11 +22,9 @@ export const UserUpdate = () => {
           setUserData(prev => ({ ...prev, [key]: data[key] }))
         }
       } catch (error) {
-        setIsErr(true)
-        setShowAlertInfo(error.response?.data?.message)
+        console.log(error)
       } finally {
         setIsPending(false)
-        setIsErr(false)
       }
     }
     getUser()
@@ -46,13 +45,9 @@ export const UserUpdate = () => {
         phoneNumber: userData.phoneNumber,
         password: userData.newPassword
       })
-      navigate('/admins')
-      setShowAlertInfo('Admin updated successfully ')
-      setShowAlerterr(true)
+      navigate('/admin')
     } catch (error) {
-      setShowAlerterr(true)
-      setIsErr(true)
-      setShowAlertInfo(error.response?.data?.message)
+      console.log(error)
     }
   }
 
@@ -65,9 +60,6 @@ export const UserUpdate = () => {
         <h1 className='text-center text-2xl font-bold text-pink-600 mb-4'>
           Update Admin
         </h1>
-        {isError && (
-          <p className='text-center text-red-500 text-sm mb-3'>{isError}</p>
-        )}
         <input
           className='p-3 outline-none border-2 border-pink-400 rounded-2xl w-full mb-3 focus:border-pink-600 transition'
           type='text'
@@ -102,7 +94,7 @@ export const UserUpdate = () => {
         />
         <div className='grid grid-cols-2 gap-3'>
           <Link
-            to='/admins'
+            to='/admin'
             className='bg-gray-400 rounded-2xl flex justify-center text-white py-3 font-bold hover:bg-gray-500 transition'
           >
             Cancel

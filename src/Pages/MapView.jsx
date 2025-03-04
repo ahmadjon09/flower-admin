@@ -1,39 +1,32 @@
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
-import { useState, useEffect, useContext } from 'react'
+import { useEffect } from 'react'
 import 'leaflet/dist/leaflet.css'
 import Axios from '../Axios'
 import { Link } from 'react-router-dom'
-import { ContextData } from '../Context/Context'
 import { MapPinArea } from '@phosphor-icons/react/dist/ssr'
 import { X } from 'lucide-react'
+import { useDispatch, useSelector } from 'react-redux'
+import { getMapPending, getMapSuccess } from '../Toolkit/MapSlicer'
 
 const center = { lat: 40.9983, lng: 71.6726 }
 
 export const ViewMap = () => {
-  const [locations, setLocations] = useState([])
-  const [pad, setPad] = useState(false)
+  const dispatch = useDispatch()
+  const { data, isPending } = useSelector(state => state.map)
 
-  const { setIsErr, setShowAlerterr, setDelete_, setShowConfirm } =
-    useContext(ContextData)
   useEffect(() => {
     const fetchLocations = async () => {
+      dispatch(getMapPending())
       try {
-        setPad(true)
         const res = await Axios.get('/map')
-        setLocations(res.data)
-        setPad(false)
+        dispatch(getMapSuccess(res?.data || []))
       } catch (error) {
-        setShowAlerterr(error.response?.data?.message || 'Unknown error')
-        setIsErr(true)
-        setPad(false)
+        console.log(error)
       }
     }
     fetchLocations()
   }, [])
-  const handleDelete = id => {
-    setShowConfirm(true)
-    setDelete_(['map', `${id}`])
-  }
+
   return (
     <div className='flex flex-col items-center gap-6 p-4 bg-green-50 min-h-screen h-screen overflow-y-auto pb-[100px]'>
       <div className='w-full flex items-center justify-between pb-3 flex-wrap gap-3 border-b border-pink-300'>
@@ -48,18 +41,15 @@ export const ViewMap = () => {
 
       <div className='w-full flex flex-col md:flex-row gap-6 items-center'>
         <div className='flex flex-wrap gap-4 w-full md:w-1/3'>
-          {pad ? null : locations.length > 0 ? (
-            locations.map((loc, index) => (
+          {isPending ? null : data.length > 0 ? (
+            data.map((loc, index) => (
               <div
                 key={index}
                 className='bg-white p-4 rounded-lg shadow-md border border-pink-300'
               >
                 <div className='text-pink-700 font-bold text-lg relative'>
                   {loc.mapsName}
-                  <button
-                    onClick={() => handleDelete(loc._id)}
-                    className='flex absolute -top-7 -right-6 w-[20px] h-[20px] bg-red-500 text-white items-center justify-center rounded-full'
-                  >
+                  <button className='flex absolute -top-7 -right-6 w-[20px] h-[20px] bg-red-500 text-white items-center justify-center rounded-full'>
                     <X size={15} />
                   </button>
                 </div>
@@ -71,7 +61,7 @@ export const ViewMap = () => {
         </div>
 
         <div className='w-full md:w-2/3'>
-          {pad ? (
+          {isPending ? (
             <p>Loading..</p>
           ) : (
             <MapContainer
@@ -81,7 +71,7 @@ export const ViewMap = () => {
             >
               <TileLayer url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png' />
 
-              {locations.map((loc, index) =>
+              {data.map((loc, index) =>
                 loc.coordinates.map((coord, i) => (
                   <Marker
                     key={`${index}-${i}`}

@@ -1,10 +1,9 @@
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet'
-import { useContext, useState } from 'react'
-import 'leaflet/dist/leaflet.css'
+import { useState } from 'react'
 import { MapPinCheckIcon, MapPinPlus } from 'lucide-react'
 import Axios from '../Axios'
 import { useNavigate } from 'react-router-dom'
-import { ContextData } from '../Context/Context'
+import 'leaflet/dist/leaflet.css'
 
 const center = { lat: 40.9983, lng: 71.6726 }
 
@@ -13,8 +12,7 @@ export const AddMap = () => {
 
   const [marker, setMarker] = useState(null)
   const [mapsName, setMapsName] = useState('')
-  const { setShowAlertInfo, setShowAlerterr, setIsErr } =
-    useContext(ContextData)
+
   const MapClickHandler = () => {
     useMapEvents({
       click: e => {
@@ -30,9 +28,6 @@ export const AddMap = () => {
   const handleSubmit = async e => {
     e.preventDefault()
     if (!marker || !mapsName) {
-      setShowAlertInfo('Enter a location name and select a place!')
-      setShowAlerterr(true)
-      setIsErr(true)
     }
 
     const mapData = {
@@ -45,13 +40,9 @@ export const AddMap = () => {
         await Axios.post('/map', mapData)
         setMarker(null)
         setMapsName('')
-        navigate('/maps')
-        setShowAlertInfo('Location added successfully ')
-        setShowAlerterr(true)
+        navigate('/map')
       } catch (error) {
-        setShowAlerterr(true)
-        setShowAlertInfo('Error:', error)
-        setIsErr(true)
+        console.log(error)
       }
     }
   }
@@ -93,6 +84,7 @@ export const AddMap = () => {
 
         <button
           type='submit'
+          disabled={isPending}
           className='w-full mt-4 flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg shadow-md transition-all duration-300'
         >
           <MapPinCheckIcon size={18} /> Save

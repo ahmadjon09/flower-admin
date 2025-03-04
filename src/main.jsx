@@ -9,7 +9,7 @@ import AdminsReducer from './Toolkit/AdminsSlicer.jsx'
 import ProductsReducer from './Toolkit/ProductsSlicer.jsx'
 import TeamReducer from './Toolkit/TeamSlicer.jsx'
 import CarouselReducer from './Toolkit/CarouselSlicer.jsx'
-import { Context } from './Context/Context.jsx'
+import MapReducer from './Toolkit/MapSlicer.jsx'
 
 const store = configureStore({
   reducer: {
@@ -17,16 +17,13 @@ const store = configureStore({
     admins: AdminsReducer,
     products: ProductsReducer,
     team: TeamReducer,
-    carousel: CarouselReducer
+    carousel: CarouselReducer,
+    map: MapReducer
   }
 })
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <Context>
-    <Provider store={store}>
-      <div className='container'>
-        <App />
-      </div>
-    </Provider>
-  </Context>
+  <Provider store={store}>
+    <App />
+  </Provider>
 )
