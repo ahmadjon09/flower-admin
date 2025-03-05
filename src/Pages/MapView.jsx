@@ -32,7 +32,7 @@ export const ViewMap = () => {
       <div className='w-full flex items-center justify-between pb-3 flex-wrap gap-3 border-b border-pink-300'>
         <h1 className='text-3xl font-bold text-pink-700'>🌸 Saved Locations</h1>
         <Link
-          className='p-3 px-5 rounded-full bg-pink-700 text-white hover:bg-pink-800 transition-all'
+          className='p-2 rounded-md bg-pink-700 text-white hover:bg-pink-800 transition-all'
           to={'/add-maps'}
         >
           + Add Location

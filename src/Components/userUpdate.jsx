@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Axios from '../Axios'
+import { useDispatch, useSelector } from 'react-redux'
+import { getUserSuccess } from '../Toolkit/UserSlicer'
 
 export const UserUpdate = (id, showUp, setShowUp) => {
   const id_ = id.id
-  console.log(showUp)
-
   const navigate = useNavigate()
   const [imagePending, setImagePending] = useState(false)
-
+  const dispatch = useDispatch()
+  const { data } = useSelector(state => state.user)
   const [userData, setUserData] = useState({
     newPassword: ''
   })
@@ -58,15 +59,15 @@ export const UserUpdate = (id, showUp, setShowUp) => {
   const handleSubmit = async e => {
     e.preventDefault()
     try {
-      await Axios.put(`admin/${id_}`, {
+      const { data } = await Axios.put(`admin/${id_}`, {
         firstName: userData.firstName,
         lastName: userData.lastName,
         avatar: userData.avatar,
         phoneNumber: userData.phoneNumber,
         password: userData.newPassword
       })
-
-      navigate('/admin')
+      dispatch(getUserSuccess(data))
+      // navigate('/admin')
     } catch (error) {
       alert(error)
     }
@@ -118,7 +119,6 @@ export const UserUpdate = (id, showUp, setShowUp) => {
           name='avatar'
           onChange={handleFileChange}
           multiple
-          required
           className='p-3 outline-none border-2 border-pink-400 rounded-2xl w-full mb-3 focus:border-pink-600 transition'
         />
         <div className='grid grid-cols-2 gap-3'>

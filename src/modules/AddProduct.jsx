@@ -59,7 +59,7 @@ export const AddProduct = () => {
   }
 
   return (
-    <div className='w-full min-h-screen bg-gradient-to-br from-pink-100 py-[100px] h-screen overflow-y-auto to-purple-200 flex justify-center items-center'>
+    <div className='w-full bg-gradient-to-br from-pink-100 py-5 to-purple-200 flex justify-center items-center'>
       <form
         onSubmit={handleFormSubmit}
         className='flex flex-col space-y-4 w-full max-w-md bg-white shadow-lg rounded-lg p-6'

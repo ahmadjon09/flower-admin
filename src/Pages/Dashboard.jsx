@@ -46,7 +46,7 @@ export const Dashboard = () => {
     window.location.href = '/'
   }
   return (
-    <div className='w-full pb-[100px] bg-pink-100'>
+    <div className='w-full pb-[100px]'>
       <div className='flex justify-between flex-wrap gap-3 min-h-[100px] p-5 items-center border-b border-pink-300'>
         <div className='flex text-pink-600 items-center gap-3'>
           {isLoading ? (

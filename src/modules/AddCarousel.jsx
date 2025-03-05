@@ -47,7 +47,7 @@ export const AddNewCarousel = () => {
   }
 
   return (
-    <div className='flex items-center justify-center min-h-screen h-screen pb-[100px] bg-gradient-to-br from-pink-100 to-pink-200 p-4'>
+    <div className='flex items-center justify-center pb-[100px] bg-gradient-to-br from-pink-100 to-pink-200 p-4'>
       <form
         onSubmit={handleFormSubmit}
         className='bg-white shadow-xl rounded-2xl p-4 w-full max-w-lg space-y-6 relative'

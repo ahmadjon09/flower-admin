@@ -14,9 +14,9 @@ export const Products = () => {
         <h1 className='text-3xl font-bold'>Products </h1>
         <Link
           to={'/create-product'}
-          className='text-white p-2 bg-black block rounded-md'
+          className='text-white p-2 bg-pink-700 block rounded-md'
         >
-          new product
+          + product
         </Link>
       </div>
       <br />

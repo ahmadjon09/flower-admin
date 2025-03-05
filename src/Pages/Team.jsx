@@ -1,18 +1,34 @@
 import { FacebookLogo, InstagramLogo, TwitterLogo } from '@phosphor-icons/react'
 import { Link } from 'react-router-dom'
 import { fetcher } from '../Middlewares/Fetcher'
-import useSWR from 'swr'
+import useSWR, { mutate } from 'swr'
+import Axios from '../Axios'
 
 export const Team = () => {
   const { data, error, isLoading } = useSWR('/teams', fetcher)
   const data_ = data?.data
+  const handleDelete = async id => {
+    if (!window.confirm('Are you sure you want to delete this team?')) return
+    try {
+      await Axios.delete(`teams/${id}`)
+      mutate(
+        '/teams',
+        data.data.filter(team => team._id !== id),
+        true
+      )
+      alert('Team deleted successfully')
+    } catch (error) {
+      alert(error.response?.data?.message || 'Failed to delete team')
+    }
+  }
+
   return (
-    <div className='p-2 bg-pink-100 text-gray-900 min-h-screen h-screen pb-[100px] overflow-y-auto'>
-      <div className='w-full flex flex-wrap gap-3 justify-between items-center p-3 border-b border-pink-300'>
+    <div className='p-2 text-gray-900'>
+      <div className='w-full flex flex-wrap gap-3 justify-between items-center p-3'>
         <h1 className='text-4xl font-bold text-pink-700'>Team</h1>
         <Link
           to={'/create-team'}
-          className='bg-pink-700 text-white px-6 py-3 rounded-full shadow-lg hover:bg-pink-800 transition-all'
+          className='bg-pink-700 text-white p-2 rounded-md shadow-lg hover:bg-pink-800 transition-all'
         >
           + Team
         </Link>
@@ -24,9 +40,9 @@ export const Team = () => {
         </div>
       ) : error ? (
         <p className='text-red-500 text-center text-xl mt-6'>Error: {error}</p>
-      ) : data_.length > 0 ? (
+      ) : data_?.length > 0 ? (
         <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'>
-          {data_.map(team => (
+          {data_?.map(team => (
             <div
               key={team._id}
               className='bg-white border border-pink-300 rounded-xl shadow-lg overflow-hidden relative text-center p-4 '

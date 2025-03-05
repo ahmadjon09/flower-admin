@@ -25,7 +25,7 @@ export const Admins = () => {
   }
 
   return (
-    <div className='p-6'>
+    <div className='p-2'>
       <div className='w-full flex-wrap gap-3 flex justify-between items-center p-4'>
         <h1 className='text-3xl text-pink-700 font-bold'>Admins</h1>
         <Link
@@ -59,7 +59,6 @@ export const Admins = () => {
               <p className='text-gray-600'>+(998) {admin.phoneNumber}</p>
               <div className='flex gap-3 mt-4'>
                 <button
-                  // to={`/edit-admin/${admin._id}`}
                   onClick={() => setShowUp(true)}
                   className='bg-blue-500 text-white rounded-full p-2 hover:bg-blue-600 transition-all'
                 >

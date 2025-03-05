@@ -1,0 +1,18 @@
+header nav ul li a.active {
+  color: rgb(248, 92, 118);
+  text-decoration: underline;
+}
+.headerBars {
+  display: none;
+}
+
+@media screen and (max-width: 400px) {
+  .headerBars {
+    display: block;
+  }
+  .headerLinks {
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+  }
+}
