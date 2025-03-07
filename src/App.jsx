@@ -10,21 +10,14 @@ import {
 import { useDispatch, useSelector } from 'react-redux'
 import { Loading } from './Pages/Loading'
 import { Dashboard } from './Pages/Dashboard'
-import { AddNewAdmin } from './modules/AddNewAdmin'
-import { EditProduct } from './modules/EditProduct'
 import { AuthLayout } from './Layout/AuthLayout'
 import { Login } from './Pages/Login'
 import { RootLayout } from './Layout/RootLayout'
 import { Products } from './Pages/Products'
-import { AddProduct } from './modules/AddProduct'
 import { Team } from './Pages/Team'
 import { Error } from './Pages/Error'
 import { Admins } from './Pages/Admins'
-import { UserUpdate } from './modules/UserUpdate'
-import { AddMap } from './modules/AddMap'
 import { ViewMap } from './Pages/MapView'
-import { UpdateTeam } from './modules/UpdateTeam'
-import { AddNewCarousel } from './modules/AddCarousel'
 
 function App () {
   const { isAuth, isPending } = useSelector(state => state.user)
@@ -66,16 +59,9 @@ function App () {
           children: [
             { index: true, element: <Dashboard /> },
             { path: 'admin', element: <Admins /> },
-            { path: 'edit-admin/:id', element: <UserUpdate /> },
-            { path: 'create-admin', element: <AddNewAdmin /> },
             { path: 'product', element: <Products /> },
-            { path: 'products/edit/:id', element: <EditProduct /> },
-            { path: 'create-product', element: <AddProduct /> },
             { path: 'teams', element: <Team /> },
-            { path: 'team-edit/:id', element: <UpdateTeam /> },
-            { path: 'add-maps', element: <AddMap /> },
             { path: 'map', element: <ViewMap /> },
-            { path: '+carousel', element: <AddNewCarousel /> },
             { path: '*', element: <Error /> }
           ]
         }

@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import Axios from '../Axios'
 import { Eye, EyeOff } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
+import { mutate } from 'swr'
+import { IsOpenModal } from '../Components/css/Modal'
 
-export const AddNewAdmin = () => {
+export const AddNewAdmin = ({ isOpen, setIsOpen }) => {
   const [error, setError] = useState('')
   const [adminData, setAdminData] = useState({
     firstName: '',
@@ -12,19 +13,26 @@ export const AddNewAdmin = () => {
     phoneNumber: ''
   })
   const [showPassword, setShowPassword] = useState(false)
-  const nav = useNavigate()
+  const [isPending, setIsPending] = useState(false)
+
   const togglePasswordVisibility = () => {
     setShowPassword(prevShowPassword => !prevShowPassword)
   }
 
   const handleFormSubmit = async e => {
     e.preventDefault()
+    setIsPending(true)
     try {
-      const { data } = await Axios.post('/admin/create', adminData)
+      await Axios.post('/admin/create', adminData)
+      setIsOpen(false)
+      mutate('/admin')
+      IsOpenModal(false)
     } catch (error) {
       setError(error.response?.data?.message || 'An error occurred')
+    } finally {
+      setIsPending(false)
+      IsOpenModal(false)
     }
-    nav('/admin')
   }
 
   const handleInputChange = e => {
@@ -33,76 +41,82 @@ export const AddNewAdmin = () => {
   }
 
   return (
-    <form
-      onSubmit={handleFormSubmit}
-      className='flex flex-col space-y-4 w-full mx-auto px-5 mt-14 md:w-[500px]'
+    <div
+      className={`fixed transition-all duration-300 z-[999] top-0 ${
+        isOpen ? 'right-0 bg-black/90' : '-right-full'
+      } flex justify-end items-center w-full h-full`}
     >
-      <h1 className='text-4xl text-center'>New Admin</h1>
-      <label htmlFor='firstName' className='sr-only'>
-        First Name
-      </label>
-      <input
-        id='firstName'
-        type='text'
-        name='firstName'
-        className='border border-gray-300 rounded-md p-2 w-full'
-        onChange={handleInputChange}
-        placeholder='First Name'
-        required
-      />
-      <label htmlFor='lastName' className='sr-only'>
-        Last Name
-      </label>
-      <input
-        id='lastName'
-        type='text'
-        name='lastName'
-        className='border border-gray-300 rounded-md p-2 w-full'
-        onChange={handleInputChange}
-        required
-        placeholder='Last Name'
-      />
-      <label htmlFor='phoneNumber' className='sr-only'>
-        Phone Number
-      </label>
-      <input
-        id='phoneNumber'
-        type='number'
-        name='phoneNumber'
-        className='border border-gray-300 rounded-md p-2 w-full'
-        onChange={handleInputChange}
-        required
-        placeholder='Phone Number'
-      />
-
-      <label htmlFor='password' className='sr-only'>
-        Password
-      </label>
-      <div className='relative w-full'>
+      <form
+        onSubmit={handleFormSubmit}
+        className='w-full h-full max-w-md md:max-w-lg bg-white p-6 md:p-8 shadow-2xl border border-pink-300'
+      >
+        <h1 className='text-center text-2xl font-bold text-pink-600 mb-4'>
+          Add New Admin
+        </h1>
         <input
-          id='password'
-          type={showPassword ? 'text' : 'password'}
-          name='password'
-          className='border border-gray-300 rounded-md p-2 w-full'
+          type='text'
+          name='firstName'
+          placeholder='First Name'
+          className='p-3 outline-none border-2 border-pink-400 rounded-md w-full mb-3 focus:border-pink-600 transition'
           onChange={handleInputChange}
           required
-          placeholder='Password'
         />
-        <span
-          className='absolute right-3 top-3 cursor-pointer'
-          onClick={togglePasswordVisibility}
-        >
-          {showPassword ? <EyeOff /> : <Eye />}
-        </span>
-      </div>
-
-      {error && <p className='text-red-500 text-sm mt-2'>{error}</p>}
-      <button
-        type='submit'
-        className='bg-green-700 w-full text-xl py-2 rounded-md text-white'
-      >
-        Submit
-      </button>
-    </form>
+        <input
+          type='text'
+          name='lastName'
+          placeholder='Last Name'
+          className='p-3 outline-none border-2 border-pink-400 rounded-md w-full mb-3 focus:border-pink-600 transition'
+          onChange={handleInputChange}
+          required
+        />
+        <input
+          type='number'
+          name='phoneNumber'
+          placeholder='Phone Number'
+          className='p-3 outline-none border-2 border-pink-400 rounded-md w-full mb-3 focus:border-pink-600 transition'
+          onChange={handleInputChange}
+          required
+        />
+        <div className='relative w-full'>
+          <input
+            type={showPassword ? 'text' : 'password'}
+            name='password'
+            placeholder='Password'
+            className='p-3 outline-none border-2 border-pink-400 rounded-md w-full mb-3 focus:border-pink-600 transition'
+            onChange={handleInputChange}
+            required
+          />
+          <span
+            className='absolute right-3 top-3 cursor-pointer'
+            onClick={togglePasswordVisibility}
+          >
+            {showPassword ? <EyeOff /> : <Eye />}
+          </span>
+        </div>
+        {error && <p className='text-red-500 p-5'>{error}</p>}
+        <div className='grid grid-cols-2 gap-3'>
+          <button
+            onClick={() => {
+              setIsOpen(false)
+              IsOpenModal(false)
+            }}
+            className='bg-gray-400 rounded-md flex justify-center text-white py-3 font-bold hover:bg-gray-500 transition'
+          >
+            Cancel
+          </button>
+          <button
+            type='submit'
+            disabled={isPending}
+            className={
+              isPending
+                ? 'bg-pink-400 cursor-not-allowed'
+                : `bg-pink-500 rounded-md text-white py-3 font-bold hover:bg-pink-600 transition`
+            }
+          >
+            {isPending ? 'Loading...' : 'Submit'}
+          </button>
+        </div>
+      </form>
+    </div>
   )
 }

@@ -11,30 +11,28 @@ import { useRef, useState } from 'react'
 import useSWR, { mutate } from 'swr'
 import { fetcher } from '../Middlewares/Fetcher'
 import { useSelector } from 'react-redux'
-import { UserUpdate } from '../Components/userUpdate'
+import { UserUpdate } from '../modules/UserUpdate'
+import { IsOpenModal } from '../Components/css/Modal'
+import { AddCarousel } from '../modules/AddCarousel'
 
 export const Dashboard = () => {
   const user = useSelector(state => state.user.data?.data || {})
   const progressCircle = useRef(null)
   const progressContent = useRef(null)
-  const [showUp, setShowUp] = useState(false)
   const { data, isLoading } = useSWR('/carousel', fetcher)
+  const [isOpen, setIsOpen] = useState(false)
+  const [isOpenC, setIsOpenC] = useState(false)
 
   const onAutoplayTimeLeft = (s, time, progress) => {
     progressCircle.current.style.setProperty('--progress', 1 - progress)
     progressContent.current.textContent = `${Math.ceil(time / 1000)}s`
   }
-
   const handleDelete = async id => {
     if (!window.confirm('Are you sure you want to delete this carousel?'))
       return
     try {
       await Axios.delete(`carousel/${id}`)
-      mutate(
-        '/carousel',
-        data.data.filter(carousel => carousel._id !== id),
-        true
-      )
+      mutate('/carousel')
       alert('Carousel deleted successfully')
     } catch (error) {
       alert(error.response?.data?.message || 'Failed to delete carousel')
@@ -45,6 +43,7 @@ export const Dashboard = () => {
     Cookies.remove('is_auth')
     window.location.href = '/'
   }
+
   return (
     <div className='w-full pb-[100px]'>
       <div className='flex justify-between flex-wrap gap-3 min-h-[100px] p-5 items-center border-b border-pink-300'>
@@ -65,8 +64,11 @@ export const Dashboard = () => {
               {user.lastName} {user.firstName}
             </h1>
             <button
-              onClick={() => setShowUp(!showUp)}
-              className='absolute w-[25px] h-[25px] p-1 flex items-center justify-center bg-blue-500 rounded-full -top-3 -right-5'
+              onClick={() => {
+                setIsOpen(true)
+                IsOpenModal(true)
+              }}
+              className='absolute w-[25px] h-[25px] p-1 flex items-center justify-center bg-blue-500 rounded-md -top-3 -right-6'
             >
               <PencilIcon color='#fff' />
             </button>
@@ -76,16 +78,19 @@ export const Dashboard = () => {
         <div className='flex gap-2 flex-wrap'>
           <button
             onClick={() => Logout()}
-            className='flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-full font-bold hover:bg-red-400 transition-all'
+            className='flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-md font-bold hover:bg-red-400 transition-all'
           >
             Logout <LogOut size={14} />
           </button>
-          <Link
-            to={'+carousel'}
-            className='bg-pink-700 text-white px-6 py-3 rounded-full shadow-lg hover:bg-pink-800 transition-all'
+          <button
+            onClick={() => {
+              setIsOpenC(true)
+              IsOpenModal(true)
+            }}
+            className='bg-pink-700 text-white px-6 py-3 rounded-md shadow-lg hover:bg-pink-800 transition-all'
           >
             + Carousel
-          </Link>
+          </button>
         </div>
       </div>
       <br />
@@ -123,17 +128,11 @@ export const Dashboard = () => {
                   {item.description}
                 </h1>
               </div>
-              <div className='flex items-center absolute gap-3 z-10 bottom-10 right-10 sm:right-14'>
-                <Link
-                  to={`/edit-carus/${item._id}`}
-                  className='bg-blue-500 text-white rounded-full p-3 sm:p-4 hover:bg-blue-600 transition-all'
-                >
-                  <Pencil size={16} sm:size={20} />
-                </Link>
+              <div className='absolute z-10 bottom-10 right-10 sm:right-14'>
                 {data?.data?.length > 1 ? (
                   <button
                     onClick={() => handleDelete(item._id)}
-                    className='bg-red-500 text-white rounded-full p-3 sm:p-4 hover:bg-red-600 transition-all'
+                    className='bg-red-500 text-white rounded-md p-3 sm:p-4 hover:bg-red-600 transition-all'
                   >
                     <Trash2 size={16} sm:size={20} />
                   </button>
@@ -148,7 +147,7 @@ export const Dashboard = () => {
         )}
 
         <div
-          className='autoplay-progress z-10 absolute bottom-3 right-3 bg-white p-1 rounded-full'
+          className='autoplay-progress z-10 absolute bottom-3 right-3 bg-white p-1 rounded-md'
           slot='container-end'
         >
           <svg viewBox='0 0 48 48' ref={progressCircle} className='w-6 h-6'>
@@ -157,7 +156,10 @@ export const Dashboard = () => {
           <span ref={progressContent}></span>
         </div>
       </Swiper>
-      {showUp && <UserUpdate id={user?._id} showUp setShowUp />}
+      {isOpen && (
+        <UserUpdate id={user?._id} isOpen={isOpen} setIsOpen={setIsOpen} />
+      )}
+      {isOpenC && <AddCarousel setIsOpen={setIsOpenC} isOpen={isOpenC} />}
     </div>
   )
 }

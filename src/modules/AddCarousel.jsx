@@ -1,26 +1,29 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState } from 'react'
 import Axios from '../Axios'
+import { IsOpenModal } from '../Components/css/Modal'
+import { mutate } from 'swr'
 
-export const AddNewCarousel = () => {
+export const AddCarousel = ({ isOpen, setIsOpen }) => {
   const [error, setError] = useState('')
   const [carouselData, setCarouselData] = useState({
     title: '',
-    lastName: '',
+    description: '',
     photos: []
   })
   const [imagePending, setImagePending] = useState(false)
-  const nav = useNavigate()
 
   const handleFormSubmit = async e => {
     e.preventDefault()
     try {
       await Axios.post('/carousel/create', carouselData)
-      nav('/')
+      setIsOpen(false)
+      IsOpenModal(false)
+      mutate('/carousel')
     } catch (error) {
       setError(error.response?.data?.message || 'An error occurred')
     }
   }
+
   const handleFileChange = async e => {
     try {
       const formImageData = new FormData()
@@ -47,52 +50,62 @@ export const AddNewCarousel = () => {
   }
 
   return (
-    <div className='flex items-center justify-center pb-[100px] bg-gradient-to-br from-pink-100 to-pink-200 p-4'>
+    <div
+      className={`fixed transition-all duration-300 z-[999] top-0 ${
+        isOpen ? 'right-0 bg-black/90' : '-right-full'
+      } flex justify-end items-center w-full h-full`}
+    >
       <form
         onSubmit={handleFormSubmit}
-        className='bg-white shadow-xl rounded-2xl p-4 w-full max-w-lg space-y-6 relative'
+        className='w-full h-full max-w-md md:max-w-lg bg-white p-6 md:p-8 shadow-2xl border border-pink-300'
       >
-        <h1 className='text-3xl font-bold text-center text-pink-700'>
-          New Carousel
+        <h1 className='text-center text-2xl font-bold text-pink-600 mb-4'>
+          Add New Carousel
         </h1>
-        <div className='space-y-4'>
-          <input
-            type='text'
-            name='title'
-            placeholder='Title'
-            className='w-full p-3 border rounded-xl focus:ring-2 focus:ring-pink-400'
-            onChange={handleInputChange}
-            required
-          />
-          <textarea
-            type='text'
-            name='description'
-            placeholder='Description'
-            className='w-full p-3 border rounded-xl focus:ring-2 focus:ring-pink-400'
-            onChange={handleInputChange}
-            required
-          />
-          <input
-            type='file'
-            name='photos'
-            onChange={handleFileChange}
-            multiple
-            required
-            className='border border-pink-300 rounded-lg p-3 w-full focus:ring-2 focus:ring-pink-400'
-          />
+        <input
+          type='text'
+          name='title'
+          placeholder='Title'
+          onChange={handleInputChange}
+          required
+          className='w-full border border-pink-300 p-3 rounded-md mb-3 focus:ring-2 focus:ring-pink-500 outline-none'
+        />
+        <textarea
+          name='description'
+          placeholder='Description'
+          onChange={handleInputChange}
+          required
+          className='w-full border border-pink-300 p-3 rounded-md mb-3 focus:ring-2 focus:ring-pink-500 outline-none'
+        />
+        <input
+          type='file'
+          name='photos'
+          onChange={handleFileChange}
+          multiple
+          required
+          className='border border-pink-300 rounded-lg p-3 w-full focus:ring-2 focus:ring-pink-400'
+        />
+        {error && <p className='text-red-500 mt-2'>{error}</p>}
+        <div className='grid grid-cols-2 gap-3 mt-4'>
+          <button
+            onClick={() => {
+              setIsOpen(false)
+              IsOpenModal(false)
+            }}
+            className='bg-gray-400 rounded-md flex justify-center text-white py-3 font-bold hover:bg-gray-500 transition'
+          >
+            Cancel
+          </button>
+          <button
+            type='submit'
+            disabled={imagePending}
+            className={`${
+              imagePending ? 'bg-pink-400 cursor-not-allowed' : 'bg-pink-500'
+            } rounded-md text-white py-3 font-bold hover:bg-pink-600 transition`}
+          >
+            {imagePending ? 'Loading...' : 'Submit'}
+          </button>
         </div>
-        {error && <p className='text-red-500 text-sm text-center'>{error}</p>}
-        <button
-          type='submit'
-          disabled={imagePending}
-          className={`${
-            imagePending
-              ? 'bg-pink-400 cursor-not-allowed'
-              : 'bg-gradient-to-r from-pink-500 to-purple-500 hover:from-purple-500 hover:to-pink-500'
-          } w-full text-xl py-3 rounded-lg text-white font-bold transition-all duration-300`}
-        >
-          {imagePending ? 'Loading...' : 'Submit'}
-        </button>
       </form>
     </div>
   )

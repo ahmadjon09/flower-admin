@@ -3,35 +3,47 @@ import { Link } from 'react-router-dom'
 import { fetcher } from '../Middlewares/Fetcher'
 import useSWR, { mutate } from 'swr'
 import Axios from '../Axios'
+import { useState } from 'react'
+
+import { AddTeam } from '../modules/AddTeam'
+import { IsOpenModal } from '../Components/css/Modal'
+import { UpdateTeam } from '../modules/UpdateTeam'
 
 export const Team = () => {
   const { data, error, isLoading } = useSWR('/teams', fetcher)
   const data_ = data?.data
+  const [isOpen, setIsOpen] = useState(false)
+  const [isOpenE, setIsOpenE] = useState(false)
+  const [id_, setId_] = useState('')
+
   const handleDelete = async id => {
     if (!window.confirm('Are you sure you want to delete this team?')) return
     try {
       await Axios.delete(`teams/${id}`)
-      mutate(
-        '/teams',
-        data.data.filter(team => team._id !== id),
-        true
-      )
+      mutate('/teams')
       alert('Team deleted successfully')
     } catch (error) {
       alert(error.response?.data?.message || 'Failed to delete team')
     }
   }
-
+  const handleEdit = id => {
+    setIsOpenE(true)
+    setId_(id)
+    IsOpenModal(true)
+  }
   return (
-    <div className='p-2 text-gray-900'>
+    <div className={`p-2  text-gray-900 ${isOpen ? 'modalBody' : ''}`}>
       <div className='w-full flex flex-wrap gap-3 justify-between items-center p-3'>
         <h1 className='text-4xl font-bold text-pink-700'>Team</h1>
-        <Link
-          to={'/create-team'}
+        <button
+          onClick={() => {
+            setIsOpen(true)
+            IsOpenModal(true)
+          }}
           className='bg-pink-700 text-white p-2 rounded-md shadow-lg hover:bg-pink-800 transition-all'
         >
           + Team
-        </Link>
+        </button>
       </div>
       <br />
       {isLoading ? (
@@ -84,12 +96,12 @@ export const Team = () => {
                   </a>
                 </div>
                 <div className='flex gap-3 flex-wrap justify-between items-center mt-6'>
-                  <Link
-                    to={`/team-edit/${team._id}`}
+                  <button
+                    onClick={() => handleEdit(team._id)}
                     className='bg-blue-500 text-white rounded-lg px-4 py-2 text-sm hover:bg-blue-400 transition-all'
                   >
                     Edit
-                  </Link>
+                  </button>
                   <button
                     onClick={() => handleDelete(team._id)}
                     className='bg-red-500 text-white rounded-lg px-4 py-2 text-sm hover:bg-red-400 transition-all'
@@ -105,6 +117,10 @@ export const Team = () => {
         <p className='text-gray-500 text-center text-lg mt-10'>
           No team members found.
         </p>
+      )}
+      {isOpen && <AddTeam isOpen={isOpen} setIsOpen={setIsOpen} />}
+      {isOpenE && (
+        <UpdateTeam isOpen={isOpenE} setIsOpen={setIsOpenE} teamId={id_} />
       )}
     </div>
   )

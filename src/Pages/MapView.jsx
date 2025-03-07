@@ -1,27 +1,25 @@
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
-import { Link } from 'react-router-dom'
 import { Phone, X } from 'lucide-react'
 import { fetcher } from '../Middlewares/Fetcher'
 import useSWR, { mutate } from 'swr'
 import { Hourglass } from '@phosphor-icons/react'
 import Axios from '../Axios'
+import { useState } from 'react'
+import { AddMap } from '../modules/AddMap'
+import { IsOpenModal } from '../Components/css/Modal'
 
 const center = { lat: 40.9983, lng: 71.6726 }
 
 export const ViewMap = () => {
   const { data, error, isLoading } = useSWR('/map', fetcher)
-
+  const [isOpen, setIsOpen] = useState(false)
   const handleDelete = async id => {
     if (!window.confirm('Are you sure you want to delete this location?'))
       return
     try {
       await Axios.delete(`map/${id}`)
-      mutate(
-        '/map',
-        data.data?.filter(map => map._id !== id),
-        true
-      )
+      mutate('/map')
       alert('Location deleted successfully')
     } catch (error) {
       alert(error.response?.data?.message || 'Failed to delete location')
@@ -31,12 +29,15 @@ export const ViewMap = () => {
     <div className='flex flex-col items-center gap-6 p-4 pb-[100px]'>
       <div className='w-full flex items-center justify-between pb-3 flex-wrap gap-3 border-b border-pink-300'>
         <h1 className='text-3xl font-bold text-pink-700'>🌸 Saved Locations</h1>
-        <Link
+        <button
           className='p-2 rounded-md bg-pink-700 text-white hover:bg-pink-800 transition-all'
-          to={'/add-maps'}
+          onClick={() => {
+            setIsOpen(true)
+            IsOpenModal(true)
+          }}
         >
           + Add Location
-        </Link>
+        </button>
       </div>
 
       <div className='w-full flex flex-col md:flex-row gap-6 items-center'>
@@ -60,7 +61,7 @@ export const ViewMap = () => {
                   <hr />
                   <button
                     onClick={() => handleDelete(loc._id)}
-                    className='flex absolute -top-1.5 -right-1.5 w-[20px] h-[20px] bg-red-500 text-white items-center justify-center rounded-full'
+                    className='flex absolute -top-1.5 -right-1.5 w-[20px] h-[20px] bg-red-500 text-white items-center justify-center rounded-md'
                   >
                     <X size={15} />
                   </button>
@@ -83,7 +84,7 @@ export const ViewMap = () => {
             >
               <TileLayer url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png' />
 
-              {data.map((loc, index) =>
+              {data?.map((loc, index) =>
                 loc.coordinates.map((coord, i) => (
                   <Marker
                     key={`${index}-${i}`}
@@ -110,6 +111,7 @@ export const ViewMap = () => {
           )}
         </div>
       </div>
+      {isOpen && <AddMap isOpen={isOpen} setIsOpen={setIsOpen} />}
     </div>
   )
 }
