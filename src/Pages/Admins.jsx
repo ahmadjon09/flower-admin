@@ -3,9 +3,9 @@ import useSWR, { mutate } from 'swr'
 import { fetcher } from '../Middlewares/Fetcher'
 import Axios from '../Axios'
 import { useState } from 'react'
-import { UserUpdate } from '../modules/userUpdate'
 import { IsOpenModal } from '../Components/css/Modal'
 import { AddNewAdmin } from '../modules/AddNewAdmin'
+import { UserUpdate } from '../modules/UserUpdate'
 
 export const Admins = () => {
   const [isOpen, setIsOpen] = useState(false)
