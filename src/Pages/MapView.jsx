@@ -1,5 +1,6 @@
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
+import L from 'leaflet'
 import { Phone, X } from 'lucide-react'
 import { fetcher } from '../Middlewares/Fetcher'
 import useSWR, { mutate } from 'swr'
@@ -8,12 +9,22 @@ import Axios from '../Axios'
 import { useState } from 'react'
 import { AddMap } from '../modules/AddMap'
 import { IsOpenModal } from '../Components/css/Modal'
+import MarkerIcon from '../Components/data/marker-shadow.png' // Rasmni import qiling
 
 const center = { lat: 40.9983, lng: 71.6726 }
+
+// Custom marker yaratamiz
+const customIcon = new L.Icon({
+  iconUrl: MarkerIcon,
+  iconSize: [32, 32], // Rasm o'lchami
+  iconAnchor: [16, 32], // Markerning markaziy nuqtasi
+  popupAnchor: [0, -32] // Pop-up joylashuvi
+})
 
 export const ViewMap = () => {
   const { data, error, isLoading } = useSWR('/map', fetcher)
   const [isOpen, setIsOpen] = useState(false)
+
   const handleDelete = async id => {
     if (!window.confirm('Are you sure you want to delete this location?'))
       return
@@ -25,6 +36,7 @@ export const ViewMap = () => {
       alert(error.response?.data?.message || 'Failed to delete location')
     }
   }
+
   return (
     <div className='flex flex-col items-center gap-6 p-4 pb-[100px]'>
       <div className='w-full flex items-center justify-between pb-3 flex-wrap gap-3 border-b border-pink-300'>
@@ -89,6 +101,7 @@ export const ViewMap = () => {
                   <Marker
                     key={`${index}-${i}`}
                     position={[coord.lat, coord.lng]}
+                    icon={customIcon} // Marker rasmi shu yerga kiritildi
                   >
                     <Popup>
                       <div className='text-center'>
