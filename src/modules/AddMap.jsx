@@ -2,11 +2,17 @@ import { useState } from 'react'
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet'
 import { MapPinPlus } from 'lucide-react'
 import Axios from '../Axios'
+import MarkerIcon from '../Components/data/marker-shadow.png' // Rasmni import qiling
 
 import 'leaflet/dist/leaflet.css'
 import { IsOpenModal } from '../Components/css/Modal'
 import { mutate } from 'swr'
-
+const customIcon = new L.Icon({
+  iconUrl: MarkerIcon,
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+  popupAnchor: [0, -32]
+})
 const center = { lat: 40.9983, lng: 71.6726 }
 
 export const AddMap = ({ isOpen, setIsOpen }) => {
@@ -67,7 +73,9 @@ export const AddMap = ({ isOpen, setIsOpen }) => {
         >
           <TileLayer url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png' />
           <MapClickHandler />
-          {marker && <Marker position={[marker.lat, marker.lng]} />}
+          {marker && (
+            <Marker icon={customIcon} position={[marker.lat, marker.lng]} />
+          )}
         </MapContainer>
         <div className='flex gap-2'>
           <input

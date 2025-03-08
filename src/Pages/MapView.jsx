@@ -9,16 +9,15 @@ import Axios from '../Axios'
 import { useState } from 'react'
 import { AddMap } from '../modules/AddMap'
 import { IsOpenModal } from '../Components/css/Modal'
-import MarkerIcon from '../Components/data/marker-shadow.png' // Rasmni import qiling
+import MarkerIcon from '../Components/data/marker-shadow.png'
 
 const center = { lat: 40.9983, lng: 71.6726 }
 
-// Custom marker yaratamiz
 const customIcon = new L.Icon({
   iconUrl: MarkerIcon,
-  iconSize: [32, 32], // Rasm o'lchami
-  iconAnchor: [16, 32], // Markerning markaziy nuqtasi
-  popupAnchor: [0, -32] // Pop-up joylashuvi
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+  popupAnchor: [0, -32]
 })
 
 export const ViewMap = () => {
@@ -101,7 +100,7 @@ export const ViewMap = () => {
                   <Marker
                     key={`${index}-${i}`}
                     position={[coord.lat, coord.lng]}
-                    icon={customIcon} // Marker rasmi shu yerga kiritildi
+                    icon={customIcon}
                   >
                     <Popup>
                       <div className='text-center'>
