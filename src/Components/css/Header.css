@@ -6,7 +6,7 @@ header nav ul li a.active {
   display: none;
 }
 
-@media screen and (max-width: 400px) {
+@media screen and (max-width: 470px) {
   .headerBars {
     display: block;
   }

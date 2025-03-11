@@ -18,6 +18,7 @@ import { Team } from './Pages/Team'
 import { Error } from './Pages/Error'
 import { Admins } from './Pages/Admins'
 import { ViewMap } from './Pages/MapView'
+import { Post } from './Pages/Posts'
 
 function App () {
   const { isAuth, isPending } = useSelector(state => state.user)
@@ -62,6 +63,7 @@ function App () {
             { path: 'product', element: <Products /> },
             { path: 'teams', element: <Team /> },
             { path: 'map', element: <ViewMap /> },
+            { path: 'post', element: <Post /> },
             { path: '*', element: <Error /> }
           ]
         }

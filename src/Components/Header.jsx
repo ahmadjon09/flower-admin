@@ -39,6 +39,11 @@ export const Header = () => {
               Locations
             </NavLink>
           </li>
+          <li>
+            <NavLink to={'/post'} className='text-white'>
+              Posts
+            </NavLink>
+          </li>
         </ul>
         <button
           className='absolute headerBars top-4.5 right-2'
