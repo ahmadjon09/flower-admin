@@ -5,7 +5,17 @@ import Axios from '../Axios'
 
 export const Post = () => {
   const { data, isLoading } = useSWR('/post', fetcher)
-
+  const formatToUzbekDate = createdAt =>
+    new Intl.DateTimeFormat('uz-UZ', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    })
+      .format(new Date(createdAt))
+      .replace(',', '')
   const handleDelete = async id => {
     if (!window.confirm('Are you sure you want to delete this post?')) return
     try {
@@ -89,6 +99,9 @@ export const Post = () => {
                 <div className='flex items-center gap-1'>
                   <ThumbsDown size={16} /> {post.dislikes}
                 </div>
+              </div>
+               <div className='flex text-gray-500 font-semibold text-sm absolute top-0'>
+                {formatToUzbekDate(post.createdAt)}
               </div>
             </div>
           ))}
