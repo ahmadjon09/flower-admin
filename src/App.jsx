@@ -72,7 +72,7 @@ function App () {
           element: <AuthLayout />,
           children: [
             { index: true, element: <Login /> },
-            { path: '*', element: <Error /> }
+            { path: '*', element: <Login /> }
           ]
         }
   ])
