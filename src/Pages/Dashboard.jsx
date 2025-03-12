@@ -61,7 +61,7 @@ export const Dashboard = () => {
           )}
           <div className='flex flex-col relative'>
             <h1 className='font-bold text-lg sm:text-xl'>
-              {user.lastName} {user.firstName}
+              {user.firstName} {user.lastName} 
             </h1>
             <button
               onClick={() => {
